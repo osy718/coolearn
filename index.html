@@ -7,6 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     :root {
       --bg: #0f172a;
@@ -21,24 +22,38 @@
       --card: #0b1220;
       --border: #1f2937;
       --radius: 12px;
+      --shadow: 0 10px 30px rgba(0,0,0,0.35);
+    }
+    
+    /* Light theme variables */
+    [data-theme="light"] {
+      --bg: #f1f5f9;
+      --panel: #ffffff;
+      --muted: #64748b;
+      --text: #1e293b;
+      --card: #ffffff;
+      --border: #e2e8f0;
+      --shadow: 0 10px 30px rgba(0,0,0,0.1);
     }
     
     * { 
       box-sizing: border-box; 
       margin: 0; 
       padding: 0; 
+      transition: background-color 0.3s, color 0.3s, border-color 0.3s;
     }
     
     html, body { 
       height: 100%; 
       font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      background-color: var(--bg);
+      color: var(--text);
     }
     
     body {
       background: radial-gradient(1200px 800px at 80% -10%, rgba(34,197,94,.12), transparent 40%),
                   radial-gradient(1000px 600px at -10% 10%, rgba(6,182,212,.12), transparent 40%),
                   var(--bg);
-      color: var(--text);
       line-height: 1.5;
       display: flex;
       justify-content: center;
@@ -82,9 +97,13 @@
       background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.0)); 
       border: 1px solid var(--border); 
       border-radius: var(--radius); 
-      box-shadow: 0 10px 30px rgba(0,0,0,0.35); 
+      box-shadow: var(--shadow); 
       display: flex;
       flex-direction: column;
+    }
+    
+    [data-theme="light"] .card {
+      background: linear-gradient(180deg, rgba(0,0,0,0.02), rgba(0,0,0,0.0));
     }
     
     .card h2 { 
@@ -150,6 +169,10 @@
       grid-template-columns: repeat(3, 1fr); 
     }
     
+    .grid-4 { 
+      grid-template-columns: repeat(4, 1fr); 
+    }
+    
     .btn { 
       border: 1px solid var(--border); 
       background: #0c1424; 
@@ -164,6 +187,10 @@
       justify-content: center;
       gap: 6px;
       transition: all 0.2s ease;
+    }
+    
+    [data-theme="light"] .btn {
+      background: #f1f5f9;
     }
     
     .btn:hover { 
@@ -226,6 +253,10 @@
     
     tr:hover td { 
       background: rgba(255,255,255,0.02); 
+    }
+    
+    [data-theme="light"] tr:hover td {
+      background: rgba(0,0,0,0.02);
     }
     
     .badge { 
@@ -303,6 +334,10 @@
       font-size: 13px;
     }
     
+    [data-theme="light"] .pill {
+      background: rgba(0,0,0,.03);
+    }
+    
     dialog { 
       border: 1px solid var(--border); 
       background: var(--panel); 
@@ -322,6 +357,10 @@
       padding: 2px 6px; 
       border-radius: 6px; 
       background: #0b1220; 
+    }
+    
+    [data-theme="light"] .kbd {
+      background: #f1f5f9;
     }
     
     .form-group {
@@ -535,6 +574,109 @@
       to { transform: translateX(100%); opacity: 0; }
     }
     
+    /* Dashboard summary cards */
+    .summary-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    
+    .summary-card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01));
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    [data-theme="light"] .summary-card {
+      background: linear-gradient(180deg, rgba(0,0,0,0.02), rgba(0,0,0,0.005));
+    }
+    
+    .summary-card h3 {
+      font-size: 14px;
+      color: var(--muted);
+      margin: 0 0 8px 0;
+      font-weight: 600;
+    }
+    
+    .summary-card .value {
+      font-size: 24px;
+      font-weight: 700;
+      margin: 0;
+    }
+    
+    .summary-card .trend {
+      font-size: 12px;
+      margin-top: 8px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    
+    .trend.up {
+      color: var(--brand);
+    }
+    
+    .trend.down {
+      color: var(--danger);
+    }
+    
+    /* Theme toggle button */
+    .theme-toggle {
+      background: none;
+      border: none;
+      color: var(--text);
+      cursor: pointer;
+      font-size: 18px;
+      padding: 8px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .theme-toggle:hover {
+      background: rgba(255,255,255,0.1);
+    }
+    
+    [data-theme="light"] .theme-toggle:hover {
+      background: rgba(0,0,0,0.05);
+    }
+    
+    /* Reminder dialog */
+    .reminder-list {
+      max-height: 300px;
+      overflow-y: auto;
+      margin: 16px 0;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px;
+    }
+    
+    .reminder-item {
+      padding: 12px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .reminder-item:last-child {
+      border-bottom: none;
+    }
+    
+    .reminder-client {
+      font-weight: 600;
+    }
+    
+    .reminder-details {
+      font-size: 13px;
+      color: var(--muted);
+    }
+    
     /* Responsive adjustments */
     @media (max-width: 768px) {
       body {
@@ -549,7 +691,7 @@
         padding: 16px;
       }
       
-      .grid-2, .grid-3 {
+      .grid-2, .grid-3, .grid-4 {
         grid-template-columns: 1fr;
       }
       
@@ -572,6 +714,10 @@
         left: 10px;
         right: 10px;
         top: 10px;
+      }
+      
+      .summary-cards {
+        grid-template-columns: 1fr;
       }
     }
   </style>
@@ -645,6 +791,9 @@
           <p class="muted" style="margin:6px 0 0 0;">Professional loan management with real-time cloud sync</p>
         </div>
         <div class="toolbar">
+          <button class="theme-toggle" id="theme-toggle" title="Toggle theme">
+            <i class="fas fa-moon"></i>
+          </button>
           <div id="connection-status" class="pill connection-connecting" style="display: flex; align-items: center; gap: 6px;">
             <div class="spinner"></div>
             <span>Connecting to Firebase...</span>
@@ -653,6 +802,10 @@
             <span>👤</span>
             <span id="user-name">User</span>
           </div>
+          <button class="btn" id="btn-reminders" title="View reminders">
+            <i class="fas fa-bell"></i>
+            <span id="reminder-count">0</span>
+          </button>
           <button class="btn" id="btn-logout" title="Sign out"><span>🚪 Sign Out</span></button>
           <button class="btn ghost" id="btn-export-json" title="Export JSON"><span>Export JSON</span></button>
           <button class="btn secondary" id="btn-export-csv" title="Export CSV"><span>Export CSV</span></button>
@@ -660,6 +813,42 @@
         </div>
       </div>
     </header>
+
+    <!-- Dashboard Summary Cards -->
+    <div class="summary-cards" id="dashboard-summary">
+      <div class="summary-card">
+        <h3>Total Loans</h3>
+        <p class="value mono" id="total-loans">0</p>
+        <div class="trend up" id="loans-trend">
+          <i class="fas fa-arrow-up"></i>
+          <span>0% from last month</span>
+        </div>
+      </div>
+      <div class="summary-card">
+        <h3>Active Loans</h3>
+        <p class="value mono" id="active-loans">0</p>
+        <div class="trend up" id="active-trend">
+          <i class="fas fa-arrow-up"></i>
+          <span>0% from last month</span>
+        </div>
+      </div>
+      <div class="summary-card">
+        <h3>Amount Due</h3>
+        <p class="value mono" id="total-due">$0.00</p>
+        <div class="trend up" id="due-trend">
+          <i class="fas fa-arrow-up"></i>
+          <span>0% from last month</span>
+        </div>
+      </div>
+      <div class="summary-card">
+        <h3>Overdue Loans</h3>
+        <p class="value mono" id="overdue-loans">0</p>
+        <div class="trend up" id="overdue-trend">
+          <i class="fas fa-arrow-up"></i>
+          <span>0% from last month</span>
+        </div>
+      </div>
+    </div>
 
     <div class="container">
       <div class="row">
@@ -889,16 +1078,62 @@
           <button class="btn ghost" id="btn-close-receipt">Close</button>
           <button class="btn" id="btn-copy-receipt">Copy Text</button>
           <button class="btn secondary" id="btn-print-receipt">Print</button>
+          <button class="btn" id="btn-export-pdf">Export PDF</button>
           <button class="btn" id="btn-share-whatsapp">Share via WhatsApp</button>
         </div>
       </div>
     </div>
   </dialog>
 
+  <!-- Reminder Modal -->
+  <dialog id="reminderDialog">
+    <div style="padding:16px;">
+      <h3 style="margin:0 0 16px 0;">Loan Reminders</h3>
+      <div class="reminder-list" id="reminder-list">
+        <div class="empty">No reminders at this time</div>
+      </div>
+      <div class="footer">
+        <div class="muted" id="reminder-summary">0 upcoming reminders</div>
+        <div class="toolbar">
+          <button class="btn ghost" id="btn-close-reminders">Close</button>
+          <button class="btn primary" id="btn-send-reminders">Send All Reminders</button>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- WhatsApp Modal -->
+  <dialog id="whatsappDialog">
+    <form method="dialog" id="whatsappForm" style="padding:16px;" class="grid">
+      <h3 style="margin:0 0 8px 0;">Send WhatsApp Reminder</h3>
+      <div class="muted" id="whatsappLoanTitle"></div>
+      <div class="form-group">
+        <label for="whatsappNumber">Phone Number</label>
+        <input id="whatsappNumber" type="tel" required placeholder="e.g. 0771234567" />
+      </div>
+      <div class="form-group">
+        <label for="whatsappMessage">Message</label>
+        <textarea id="whatsappMessage" rows="4" required></textarea>
+      </div>
+      <div class="footer">
+        <div class="muted">Message will be sent via WhatsApp</div>
+        <div class="toolbar">
+          <button class="btn ghost" value="cancel" type="button">Cancel</button>
+          <button class="btn primary" value="submit" id="btn-send-whatsapp">
+            <span>Open WhatsApp</span>
+          </button>
+        </div>
+      </div>
+    </form>
+  </dialog>
+
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  
+  <!-- html2pdf library for PDF export -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   
   <script>
     // Firebase configuration
@@ -1071,6 +1306,35 @@
         if (value === null || value === undefined || value === '') return defaultValue;
         const parsed = parseFloat(value);
         return isNaN(parsed) ? defaultValue : parsed;
+      },
+      
+      // Export to PDF using html2pdf
+      exportToPdf: (element, filename) => {
+        const options = {
+          margin: 10,
+          filename: filename,
+          image: { type: 'jpeg', quality: 0.98 },
+          html2canvas: { scale: 2 },
+          jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+        
+        html2pdf().set(options).from(element).save();
+      },
+      
+      // Calculate days between dates
+      daysBetween: (date1, date2) => {
+        const oneDay = 24 * 60 * 60 * 1000;
+        const firstDate = new Date(date1);
+        const secondDate = new Date(date2);
+        return Math.round(Math.abs((firstDate - secondDate) / oneDay));
+      },
+      
+      // Format phone number
+      formatPhoneNumber: (phone) => {
+        if (!phone) return '';
+        // Remove all non-digit characters
+        const cleaned = phone.replace(/\D/g, '');
+        return cleaned;
       }
     };
 
@@ -1087,8 +1351,22 @@
       const authSwitchLink = document.getElementById('auth-switch-link');
       const logoutButton = document.getElementById('btn-logout');
       const userNameElement = document.getElementById('user-name');
+      const themeToggle = document.getElementById('theme-toggle');
       
       let isLoginMode = true;
+      
+      // Theme management
+      const currentTheme = localStorage.getItem('theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', currentTheme);
+      themeToggle.innerHTML = currentTheme === 'dark' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+      
+      // Toggle theme
+      themeToggle.addEventListener('click', () => {
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        themeToggle.innerHTML = newTheme === 'dark' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+      });
       
       // Toggle between login and signup forms
       authSwitchLink.addEventListener('click', function() {
@@ -1243,6 +1521,7 @@
       let userId = user.uid;
       let isOnline = false;
       let firebaseInitialized = false;
+      let nextReferenceId = 9; // Starting at 009
       
       // DOM Elements cache
       const elements = {};
@@ -1257,14 +1536,26 @@
           'editClientName', 'editPhone', 'editPrincipal', 'editInterestPct', 'editInterestType',
           'editIssueDate', 'editDueDate', 'editCurrency', 'editReference', 'editNotes', 
           'receiptDialog', 'receiptContent', 'btn-close-receipt', 'btn-copy-receipt', 
-          'btn-print-receipt', 'btn-share-whatsapp', 'btn-export-json', 
+          'btn-print-receipt', 'btn-export-pdf', 'btn-share-whatsapp', 'btn-export-json', 
           'btn-export-csv', 'btn-clear', 'btn-receipt-preview', 'now', 'connection-status',
-          'btn-submit-loan', 'btn-submit-payment', 'btn-submit-edit'
+          'btn-submit-loan', 'btn-submit-payment', 'btn-submit-edit', 'dashboard-summary',
+          'total-loans', 'active-loans', 'total-due', 'overdue-loans', 'loans-trend',
+          'active-trend', 'due-trend', 'overdue-trend', 'btn-reminders', 'reminderDialog',
+          'reminder-list', 'btn-close-reminders', 'btn-send-reminders', 'reminder-count',
+          'whatsappDialog', 'whatsappForm', 'whatsappLoanTitle', 'whatsappNumber', 'whatsappMessage', 'btn-send-whatsapp',
+          'reminder-summary'
         ];
         
         ids.forEach(id => {
           elements[id] = document.getElementById(id);
         });
+      }
+      
+      // Generate auto-incrementing reference ID
+      function generateReferenceId() {
+        const refId = `REF-${nextReferenceId.toString().padStart(3, '0')}`;
+        nextReferenceId++;
+        return refId;
       }
       
       // Financial calculations
@@ -1336,6 +1627,169 @@
         }
       };
       
+      // Dashboard functions
+      const dashboard = {
+        updateSummary: () => {
+          if (loans.length === 0) {
+            elements['total-loans'].textContent = '0';
+            elements['active-loans'].textContent = '0';
+            elements['total-due'].textContent = '$0.00';
+            elements['overdue-loans'].textContent = '0';
+            return;
+          }
+          
+          // Calculate totals
+          const totalLoans = loans.length;
+          const activeLoans = loans.filter(loan => calculator.getStatus(loan) === 'active').length;
+          const overdueLoans = loans.filter(loan => calculator.getStatus(loan) === 'overdue').length;
+          
+          // Calculate total due amount
+          let totalDueAmount = 0;
+          loans.forEach(loan => {
+            const { balance } = calculator.computeTotals(loan);
+            if (balance > 0) {
+              totalDueAmount += balance;
+            }
+          });
+          
+          // Update UI
+          elements['total-loans'].textContent = totalLoans;
+          elements['active-loans'].textContent = activeLoans;
+          elements['overdue-loans'].textContent = overdueLoans;
+          elements['total-due'].textContent = utils.formatCurrency(totalDueAmount);
+          
+          // For demo purposes, set random trends
+          const trends = ['up', 'down'];
+          const randomTrend = trends[Math.floor(Math.random() * trends.length)];
+          const randomPercent = (Math.random() * 15 + 5).toFixed(1);
+          
+          // Update trend indicators
+          const trendElements = [
+            elements['loans-trend'],
+            elements['active-trend'],
+            elements['due-trend'],
+            elements['overdue-trend']
+          ];
+          
+          trendElements.forEach(el => {
+            el.className = `trend ${randomTrend}`;
+            el.innerHTML = `<i class="fas fa-arrow-${randomTrend}"></i><span>${randomPercent}% from last month</span>`;
+          });
+        },
+        
+        // Get reminders for overdue and upcoming loans
+        getReminders: () => {
+          const reminders = [];
+          const today = new Date();
+          
+          loans.forEach(loan => {
+            const status = calculator.getStatus(loan);
+            const dueDate = new Date(loan.dueDate);
+            
+            if (status === 'overdue') {
+              const daysOverdue = utils.daysBetween(today, dueDate);
+              reminders.push({
+                type: 'overdue',
+                loan: loan,
+                days: daysOverdue,
+                message: `${loan.clientName} is ${daysOverdue} days overdue on ${utils.formatCurrency(calculator.computeTotals(loan).balance, loan.currency)} payment`
+              });
+            } else if (status === 'active') {
+              const daysUntilDue = utils.daysBetween(today, dueDate);
+              
+              // Add reminder for loans due in 3 days or less
+              if (daysUntilDue <= 3) {
+                reminders.push({
+                  type: 'upcoming',
+                  loan: loan,
+                  days: daysUntilDue,
+                  message: `${loan.clientName} has payment due in ${daysUntilDue} day${daysUntilDue !== 1 ? 's' : ''}`
+                });
+              }
+            }
+          });
+          
+          // Sort reminders: overdue first, then by days until due
+          reminders.sort((a, b) => {
+            if (a.type === 'overdue' && b.type !== 'overdue') return -1;
+            if (a.type !== 'overdue' && b.type === 'overdue') return 1;
+            return a.days - b.days;
+          });
+          
+          return reminders;
+        },
+        
+        // Update reminder count badge
+        updateReminderCount: () => {
+          const reminders = dashboard.getReminders();
+          elements['reminder-count'].textContent = reminders.length;
+        },
+        
+        // Show reminders dialog
+        showReminders: () => {
+          const reminders = dashboard.getReminders();
+          const reminderList = elements['reminder-list'];
+          
+          if (reminders.length === 0) {
+            reminderList.innerHTML = '<div class="empty">No reminders at this time</div>';
+            elements['reminder-summary'].textContent = '0 upcoming reminders';
+            return;
+          }
+          
+          let html = '';
+          reminders.forEach(reminder => {
+            const { loan, message, type, days } = reminder;
+            const icon = type === 'overdue' ? '⏰' : '🔔';
+            const statusClass = type === 'overdue' ? 'badge danger' : 'badge warn';
+            
+            html += `
+              <div class="reminder-item">
+                <div>
+                  <div class="reminder-client">${icon} ${loan.clientName}</div>
+                  <div class="reminder-details">${message}</div>
+                </div>
+                <div class="${statusClass}">${type === 'overdue' ? 'OVERDUE' : 'DUE SOON'}</div>
+              </div>
+            `;
+          });
+          
+          reminderList.innerHTML = html;
+          elements['reminder-summary'].textContent = `${reminders.length} reminder${reminders.length !== 1 ? 's' : ''}`;
+          elements['reminderDialog'].showModal();
+        },
+        
+        // Send WhatsApp reminder
+        sendWhatsAppReminder: (loan) => {
+          if (!loan.phone) {
+            utils.showToast('No phone number available for this client', 'error');
+            return;
+          }
+          
+          const { balance } = calculator.computeTotals(loan);
+          const dueDate = new Date(loan.dueDate);
+          const today = new Date();
+          const isOverdue = dueDate < today;
+          const daysDiff = utils.daysBetween(today, dueDate);
+          
+          let message = `Hello ${loan.clientName}, this is a reminder from Koo Cash Loans. `;
+          
+          if (isOverdue) {
+            message += `Your payment of ${utils.formatCurrency(balance, loan.currency)} is ${daysDiff} days overdue. Please make payment as soon as possible.`;
+          } else {
+            message += `Your payment of ${utils.formatCurrency(balance, loan.currency)} is due in ${daysDiff} days on ${utils.formatDate(loan.dueDate)}.`;
+          }
+          
+          message += ` Thank you.`;
+          
+          // Prefill WhatsApp dialog
+          elements['whatsappLoanTitle'].textContent = `Send WhatsApp to ${loan.clientName}`;
+          elements['whatsappNumber'].value = loan.phone;
+          elements['whatsappMessage'].value = message;
+          
+          elements['whatsappDialog'].showModal();
+        }
+      };
+      
       // Firebase operations
       const firebaseService = {
         init: async () => {
@@ -1368,7 +1822,22 @@
               snapshot.forEach((doc) => {
                 loans.push({ id: doc.id, ...doc.data() });
               });
+              
+              // Update next reference ID based on existing loans
+              loans.forEach(loan => {
+                if (loan.reference && loan.reference.startsWith('REF-')) {
+                  const refNum = parseInt(loan.reference.replace('REF-', ''));
+                  if (!isNaN(refNum) && refNum >= nextReferenceId) {
+                    nextReferenceId = refNum + 1;
+                  }
+                }
+              });
+              
+              // Update dashboard and table
+              dashboard.updateSummary();
+              dashboard.updateReminderCount();
               renderer.renderLoansTable();
+              
               utils.updateConnectionStatus(elements['connection-status'], 'online');
             }, (error) => {
               utils.handleError(error, 'Firebase listener');
@@ -1812,7 +2281,7 @@
             issueDate: elements.issueDate.value,
             dueDate: elements.dueDate.value,
             currency: elements.currency.value,
-            reference: elements.reference.value.trim(),
+            reference: elements.reference.value.trim() || generateReferenceId(),
             notes: elements.notes.value.trim(),
             createdAt: new Date().toISOString(),
             payments: []
@@ -1960,16 +2429,64 @@
               window.print();
               break;
               
+            case 'pdf':
+              const printableElement = document.getElementById('receipt-printable');
+              utils.exportToPdf(printableElement, `receipt-${loan.clientName}-${utils.todayISO()}.pdf`);
+              utils.showToast('PDF downloaded successfully');
+              break;
+              
             case 'whatsapp':
-              const message = `Koo Cash Loan Receipt for ${loan.clientName}. Total: ${utils.formatCurrency(totalDue, loan.currency)}, Balance: ${utils.formatCurrency(balance, loan.currency)}.`;
-              const url = `https://wa.me/?text=${encodeURIComponent(message)}`;
-              window.open(url, '_blank');
+              dashboard.sendWhatsAppReminder(loan);
               break;
               
             case 'close':
               elements.receiptDialog.close();
               break;
           }
+        },
+        
+        handleWhatsAppSubmit: (e) => {
+          e.preventDefault();
+          
+          const phoneNumber = elements.whatsappNumber.value;
+          const message = elements.whatsappMessage.value;
+          
+          if (!phoneNumber) {
+            utils.showToast('Phone number is required', 'error');
+            return;
+          }
+          
+          // Format phone number for WhatsApp (remove any non-digit characters)
+          const formattedPhone = utils.formatPhoneNumber(phoneNumber);
+          
+          // Create WhatsApp link
+          const whatsappLink = `https://wa.me/${formattedPhone}?text=${encodeURIComponent(message)}`;
+          
+          // Open WhatsApp
+          window.open(whatsappLink, '_blank');
+          
+          // Close dialog
+          elements.whatsappDialog.close();
+          utils.showToast('WhatsApp opened with message');
+        },
+        
+        handleSendAllReminders: () => {
+          const reminders = dashboard.getReminders();
+          
+          if (reminders.length === 0) {
+            utils.showToast('No reminders to send', 'info');
+            return;
+          }
+          
+          // For each reminder with a phone number, prepare WhatsApp
+          reminders.forEach(reminder => {
+            if (reminder.loan.phone) {
+              dashboard.sendWhatsAppReminder(reminder.loan);
+            }
+          });
+          
+          utils.showToast(`Prepared ${reminders.length} reminders for sending`);
+          elements.reminderDialog.close();
         }
       };
       
@@ -1986,6 +2503,9 @@
         elements.issueDate.value = today;
         elements.dueDate.value = in30Days;
         
+        // Set default reference ID
+        elements.reference.value = generateReferenceId();
+        
         // Initialize Firebase
         firebaseService.init();
         
@@ -1993,6 +2513,40 @@
         elements.loanForm.addEventListener('submit', handlers.handleLoanSubmit);
         elements.paymentForm.addEventListener('submit', handlers.handlePaymentSubmit);
         elements.editForm.addEventListener('submit', handlers.handleEditSubmit);
+        elements.whatsappForm.addEventListener('submit', handlers.handleWhatsAppSubmit);
+        
+        // Button listeners
+        elements.btnReminders.addEventListener('click', dashboard.showReminders);
+        elements.btnCloseReminders.addEventListener('click', () => elements.reminderDialog.close());
+        elements.btnSendReminders.addEventListener('click', handlers.handleSendAllReminders);
+        
+        elements.btnCloseReceipt.addEventListener('click', () => handlers.handleReceiptActions('close'));
+        elements.btnCopyReceipt.addEventListener('click', () => handlers.handleReceiptActions('copy'));
+        elements.btnPrintReceipt.addEventListener('click', () => handlers.handleReceiptActions('print'));
+        elements.btnExportPdf.addEventListener('click', () => handlers.handleReceiptActions('pdf'));
+        elements.btnShareWhatsapp.addEventListener('click', () => handlers.handleReceiptActions('whatsapp'));
+        
+        elements.btnReceiptPreview.addEventListener('click', () => {
+          const formData = {
+            clientName: elements.clientName.value.trim() || 'Sample Client',
+            phone: elements.phone.value.trim() || '0771234567',
+            principal: utils.safeParseFloat(elements.principal.value) || 1000,
+            interestPct: utils.safeParseFloat(elements.interestPct.value) || 20,
+            interestType: elements.interestType.value,
+            issueDate: elements.issueDate.value,
+            dueDate: elements.dueDate.value,
+            currency: elements.currency.value,
+            reference: elements.reference.value.trim() || generateReferenceId(),
+            notes: elements.notes.value.trim() || 'Sample loan for demonstration purposes',
+            payments: []
+          };
+          
+          renderer.showReceipt(formData);
+        });
+        
+        elements.btnExportJson.addEventListener('click', firebaseService.exportToJson);
+        elements.btnExportCsv.addEventListener('click', firebaseService.exportToCsv);
+        elements.btnClear.addEventListener('click', firebaseService.clearAll);
         
         // Input event listeners
         elements.principal.addEventListener('input', utils.debounce(renderer.updateLoanPreview, 300));
@@ -2005,33 +2559,6 @@
         elements.search.addEventListener('input', utils.debounce(renderer.renderLoansTable, 300));
         elements.statusFilter.addEventListener('change', renderer.renderLoansTable);
         elements.sortBy.addEventListener('change', renderer.renderLoansTable);
-        
-        // Button listeners
-        elements.btnCloseReceipt.addEventListener('click', () => handlers.handleReceiptActions('close'));
-        elements.btnCopyReceipt.addEventListener('click', () => handlers.handleReceiptActions('copy'));
-        elements.btnPrintReceipt.addEventListener('click', () => handlers.handleReceiptActions('print'));
-        elements.btnShareWhatsapp.addEventListener('click', () => handlers.handleReceiptActions('whatsapp'));
-        elements.btnReceiptPreview.addEventListener('click', () => {
-          const formData = {
-            clientName: elements.clientName.value.trim() || 'Sample Client',
-            phone: elements.phone.value.trim() || '0771234567',
-            principal: utils.safeParseFloat(elements.principal.value) || 1000,
-            interestPct: utils.safeParseFloat(elements.interestPct.value) || 20,
-            interestType: elements.interestType.value,
-            issueDate: elements.issueDate.value,
-            dueDate: elements.dueDate.value,
-            currency: elements.currency.value,
-            reference: elements.reference.value.trim() || 'REF-001',
-            notes: elements.notes.value.trim() || 'Sample loan for demonstration purposes',
-            payments: []
-          };
-          
-          renderer.showReceipt(formData);
-        });
-        
-        elements.btnExportJson.addEventListener('click', firebaseService.exportToJson);
-        elements.btnExportCsv.addEventListener('click', firebaseService.exportToCsv);
-        elements.btnClear.addEventListener('click', firebaseService.clearAll);
         
         // Dialog close handlers
         elements.paymentDialog.addEventListener('close', () => {
@@ -2057,6 +2584,8 @@
             if (elements.paymentDialog.open) elements.paymentDialog.close();
             if (elements.editDialog.open) elements.editDialog.close();
             if (elements.receiptDialog.open) elements.receiptDialog.close();
+            if (elements.reminderDialog.open) elements.reminderDialog.close();
+            if (elements.whatsappDialog.open) elements.whatsappDialog.close();
           }
         });
       }
@@ -2066,4 +2595,4 @@
     }
   </script>
 </body>
-</html>
+  </html>
