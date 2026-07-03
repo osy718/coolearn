@@ -1,103 +1,1321 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Koo Cash Loan Tracker</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    :root {
-      --bg: #0f172a;
-      --panel: #111827;
-      --muted: #94a3b8;
-      --text: #e5e7eb;
-      --brand: #22c55e;
-      --brand-2: #06b6d4;
-      --warn: #f59e0b;
-      --danger: #ef4444;
-      --ok: #10b981;
-      --card: #0b1220;
-      --border: #1f2937;
-      --radius: 12px;
-      --shadow: 0 10px 30px rgba(0,0,0,0.35);
-    }
-    
-    /* Light theme variables */
-    [data-theme="light"] {
-      --bg: #f1f5f9;
-      --panel: #ffffff;
-      --muted: #64748b;
-      --text: #1e293b;
-      --card: #ffffff;
-      --border: #e2e8f0;
-      --shadow: 0 10px 30px rgba(0,0,0,0.1);
-    }
-    
-    * { 
-      box-sizing: border-box; 
-      margin: 0; 
-      padding: 0; 
-      transition: background-color 0.3s, color 0.3s, border-color 0.3s;
-    }
-    
-    html, body { 
-      height: 100%; 
-      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji";
-      background-color: var(--bg);
-      color: var(--text);
-    }
-    
-    body {
-      background: radial-gradient(1200px 800px at 80% -10%, rgba(34,197,94,.12), transparent 40%),
-                  radial-gradient(1000px 600px at -10% 10%, rgba(6,182,212,.12), transparent 40%),
-                  var(--bg);
-      line-height: 1.5;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      padding: 20px;
-    }
-    
-    .app-wrapper {
-      width: 100%;
-      max-width: 1200px;
-      height: 100%;
-      max-height: 95vh;
-      display: flex;
-      flex-direction: column;
-    }
-    
-    .container { 
-      width: 100%;
-      flex: 1;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-    }
-    
-    .row { 
-      display: grid; 
-      grid-template-columns: 1fr; 
-      gap: 16px;
-      flex: 1;
-      overflow: hidden;
-    }
-    
-    @media (min-width: 1024px){ 
-      .row { 
-        grid-template-columns: 360px 1fr; 
-      } 
-    }
-    
-    .card { 
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.0)); 
-      border: 1px solid var(--border); 
-      border-radius: var(--radius); 
-      box-shadow: var(--shadow); 
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#006b3c">
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="manifest" href="data:application/json,{'name':'ZimVendors AP','short_name':'ZimVendors','theme_color':'#006b3c','background_color':'#f5f5f5','display':'standalone','orientation':'portrait'}">
+    <title>ZimVendors AP</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary: #006b3c;
+            --primary-dark: #004d2b;
+            --primary-light: #e8f5e9;
+            --accent: #ffd966;
+            --accent-dark: #f0c929;
+            --danger: #d32f2f;
+            --danger-light: #ffebee;
+            --success: #2e7d32;
+            --warning: #f57c00;
+            --surface: #ffffff;
+            --surface-variant: #f5f5f5;
+            --background: #f0f2f5;
+            --on-surface: #1a1a1a;
+            --on-surface-variant: #666666;
+            --outline: #e0e0e0;
+            --elevation-1: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.08);
+            --elevation-2: 0 3px 6px rgba(0,0,0,0.15), 0 2px 4px rgba(0,0,0,0.10);
+            --elevation-3: 0 10px 20px rgba(0,0,0,0.15), 0 3px 6px rgba(0,0,0,0.10);
+            --elevation-4: 0 14px 28px rgba(0,0,0,0.20), 0 10px 10px rgba(0,0,0,0.15);
+            --radius-sm: 8px;
+            --radius: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+            --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            --bottom-nav-height: 64px;
+            --status-bar-height: env(safe-area-inset-top, 0px);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        body {
+            font-family: 'Roboto', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--background);
+            color: var(--on-surface);
+            line-height: 1.5;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            padding-top: var(--status-bar-height);
+        }
+
+        /* ============ STATUS BAR ============ */
+        .status-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--status-bar-height);
+            background: var(--primary-dark);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            color: white;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        /* ============ TOP APP BAR ============ */
+        .app-bar {
+            position: fixed;
+            top: var(--status-bar-height);
+            left: 0;
+            right: 0;
+            height: 56px;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            z-index: 999;
+            box-shadow: var(--elevation-2);
+            transition: var(--transition);
+        }
+
+        .app-bar-title {
+            font-size: 20px;
+            font-weight: 500;
+            flex: 1;
+            text-align: center;
+            letter-spacing: 0.25px;
+        }
+
+        .app-bar-icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 20px;
+        }
+
+        .app-bar-icon:active {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* ============ MAIN CONTENT ============ */
+        .main-content {
+            margin-top: calc(56px + var(--status-bar-height));
+            padding: 16px;
+            padding-bottom: calc(var(--bottom-nav-height) + 24px);
+            min-height: 100vh;
+        }
+
+        /* ============ PAGE TRANSITIONS ============ */
+        .page {
+            display: none;
+            animation: pageEnter 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes pageEnter {
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ============ CARDS ============ */
+        .card {
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: var(--elevation-1);
+            transition: var(--transition);
+        }
+
+        .card-header {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--on-surface);
+        }
+
+        /* ============ STATS CHIPS ============ */
+        .stats-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+
+        .stats-row::-webkit-scrollbar {
+            display: none;
+        }
+
+        .stat-chip {
+            background: var(--surface);
+            border-radius: var(--radius-xl);
+            padding: 12px 16px;
+            min-width: 130px;
+            flex-shrink: 0;
+            box-shadow: var(--elevation-1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .stat-chip:active {
+            transform: scale(0.97);
+        }
+
+        .stat-chip .icon-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .stat-chip .icon-green {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+        .stat-chip .icon-orange {
+            background: #fff3e0;
+            color: var(--warning);
+        }
+        .stat-chip .icon-red {
+            background: var(--danger-light);
+            color: var(--danger);
+        }
+        .stat-chip .icon-blue {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .stat-chip .info .value {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--on-surface);
+        }
+
+        .stat-chip .info .label {
+            font-size: 11px;
+            color: var(--on-surface-variant);
+            text-transform: uppercase;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        /* ============ PRODUCT GRID ============ */
+        .section-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--on-surface-variant);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            padding: 0 4px;
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .product-card {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 12px 10px;
+            text-align: center;
+            box-shadow: var(--elevation-1);
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            border: 2px solid transparent;
+        }
+
+        .product-card:active {
+            transform: scale(0.95);
+            border-color: var(--primary);
+            box-shadow: var(--elevation-2);
+        }
+
+        .product-card .emoji {
+            font-size: 28px;
+            margin-bottom: 6px;
+        }
+
+        .product-card .name {
+            font-weight: 600;
+            font-size: 13px;
+            margin-bottom: 4px;
+            color: var(--on-surface);
+            line-height: 1.3;
+        }
+
+        .product-card .price-tag {
+            background: var(--primary-light);
+            color: var(--primary);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 13px;
+            display: inline-block;
+        }
+
+        .product-card .stock-dot {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .product-card .stock-dot.low {
+            background: var(--warning);
+            box-shadow: 0 0 0 4px rgba(245, 124, 0, 0.2);
+        }
+        .product-card .stock-dot.out {
+            background: var(--danger);
+            box-shadow: 0 0 0 4px rgba(211, 47, 47, 0.2);
+        }
+        .product-card .stock-dot.ok {
+            background: var(--success);
+            box-shadow: 0 0 0 4px rgba(46, 125, 50, 0.2);
+        }
+
+        /* ============ SEARCH BAR ============ */
+        .search-bar {
+            background: var(--surface-variant);
+            border-radius: var(--radius-xl);
+            padding: 10px 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            border: 2px solid transparent;
+            transition: var(--transition);
+        }
+
+        .search-bar:focus-within {
+            border-color: var(--primary);
+            background: var(--surface);
+            box-shadow: var(--elevation-1);
+        }
+
+        .search-bar input {
+            border: none;
+            background: transparent;
+            flex: 1;
+            font-size: 14px;
+            outline: none;
+            color: var(--on-surface);
+        }
+
+        .search-bar i {
+            color: var(--on-surface-variant);
+        }
+
+        /* ============ CART ============ */
+        .cart-fab {
+            position: fixed;
+            bottom: calc(var(--bottom-nav-height) + 16px);
+            right: 16px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: var(--accent);
+            color: var(--on-surface);
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: var(--elevation-3);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .cart-fab:active {
+            transform: scale(0.9);
+        }
+
+        .cart-fab .badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background: var(--danger);
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            font-size: 12px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ============ BOTTOM SHEET (CART) ============ */
+        .bottom-sheet-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 500;
+        }
+
+        .bottom-sheet-overlay.active {
+            display: block;
+            animation: fadeIn 0.2s;
+        }
+
+        .bottom-sheet {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--surface);
+            border-radius: 20px 20px 0 0;
+            max-height: 70vh;
+            z-index: 501;
+            transform: translateY(100%);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            box-shadow: var(--elevation-4);
+        }
+
+        .bottom-sheet.active {
+            transform: translateY(0);
+        }
+
+        .bottom-sheet-handle {
+            width: 32px;
+            height: 4px;
+            background: #ccc;
+            border-radius: 2px;
+            margin: 12px auto;
+        }
+
+        .bottom-sheet-content {
+            padding: 0 16px 16px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        /* ============ BOTTOM NAVIGATION ============ */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: var(--bottom-nav-height);
+            background: var(--surface);
+            display: flex;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 600;
+            padding-bottom: env(safe-area-inset-bottom, 0);
+        }
+
+        .nav-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            border: none;
+            background: none;
+            color: var(--on-surface-variant);
+            font-family: inherit;
+            padding: 8px 0;
+        }
+
+        .nav-item i {
+            font-size: 22px;
+            margin-bottom: 2px;
+            transition: var(--transition);
+        }
+
+        .nav-item span {
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+
+        .nav-item.active i {
+            transform: scale(1.1);
+        }
+
+        .nav-item.active::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 24px;
+            height: 3px;
+            background: var(--primary);
+            border-radius: 0 0 3px 3px;
+        }
+
+        /* ============ FORMS ============ */
+        .input-filled {
+            background: var(--surface-variant);
+            border-radius: var(--radius-sm);
+            border: 2px solid transparent;
+            padding: 12px 16px;
+            font-size: 14px;
+            width: 100%;
+            transition: var(--transition);
+            color: var(--on-surface);
+            font-family: inherit;
+            margin-bottom: 8px;
+            outline: none;
+        }
+
+        .input-filled:focus {
+            border-color: var(--primary);
+            background: var(--surface);
+            box-shadow: var(--elevation-1);
+        }
+
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: var(--radius-xl);
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: var(--transition);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-family: inherit;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn:active {
+            transform: scale(0.97);
+        }
+
+        .btn-filled {
+            background: var(--primary);
+            color: white;
+            box-shadow: var(--elevation-1);
+        }
+
+        .btn-filled:hover {
+            box-shadow: var(--elevation-2);
+        }
+
+        .btn-accent {
+            background: var(--accent);
+            color: var(--on-surface);
+            box-shadow: var(--elevation-1);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-block {
+            width: 100%;
+        }
+
+        /* ============ CHIPS ============ */
+        .chip {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 14px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 500;
+            gap: 4px;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 1px solid var(--outline);
+            background: var(--surface);
+            margin: 2px;
+        }
+
+        .chip.active {
+            background: var(--primary-light);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .chip-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-bottom: 8px;
+        }
+
+        /* ============ MODAL ============ */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 700;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--surface);
+            border-radius: var(--radius-xl);
+            padding: 24px;
+            width: 100%;
+            max-width: 400px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: var(--elevation-4);
+            animation: modalEnter 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes modalEnter {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 500;
+            margin-bottom: 16px;
+        }
+
+        /* ============ RECEIPT ============ */
+        .receipt {
+            background: #fffef5;
+            padding: 20px;
+            border-radius: var(--radius);
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            border: 2px dashed #ccc;
+        }
+
+        .receipt .center {
+            text-align: center;
+        }
+        .receipt .divider {
+            border-top: 1px dashed #999;
+            margin: 8px 0;
+        }
+        .receipt .total {
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        /* ============ SNACKBAR ============ */
+        .snackbar {
+            position: fixed;
+            bottom: calc(var(--bottom-nav-height) + 24px);
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #323232;
+            color: white;
+            padding: 14px 24px;
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            font-weight: 500;
+            z-index: 800;
+            transition: transform 0.3s ease;
+            box-shadow: var(--elevation-3);
+            white-space: nowrap;
+            max-width: 90vw;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .snackbar.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* ============ TABLES (in modals/pages) ============ */
+        .list-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--outline);
+        }
+
+        .list-item:last-child {
+            border-bottom: none;
+        }
+
+        /* ============ EMPTY STATE ============ */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--on-surface-variant);
+        }
+
+        .empty-state .icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+            opacity: 0.5;
+        }
+
+        /* ============ RESPONSIVE ============ */
+        @media (min-width: 768px) {
+            .main-content {
+                max-width: 600px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+            .product-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            .bottom-nav {
+                max-width: 600px;
+                left: 50%;
+                transform: translateX(-50%);
+                border-radius: 20px 20px 0 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Status Bar (Android-like) -->
+    <div class="status-bar" id="statusBar">
+        <span id="statusTime">12:00</span>
+        <span>
+            <i class="fas fa-signal"></i>
+            <i class="fas fa-wifi"></i>
+            <i class="fas fa-battery-full"></i>
+        </span>
+    </div>
+
+    <!-- App Bar -->
+    <div class="app-bar" id="appBar">
+        <span class="app-bar-title" id="appBarTitle">🏪 My Shop</span>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content" id="mainContent">
+        <!-- SALES PAGE -->
+        <div id="salesPage" class="page active">
+            <!-- Stats Chips -->
+            <div class="stats-row" id="statsRow"></div>
+
+            <!-- Search -->
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" id="productSearch" placeholder="Search products..." oninput="renderProductGrid()">
+            </div>
+
+            <!-- Products -->
+            <div class="section-title">📦 Products</div>
+            <div class="product-grid" id="productGrid"></div>
+        </div>
+
+        <!-- STOCK PAGE -->
+        <div id="stockPage" class="page">
+            <div class="card">
+                <div class="card-header">➕ Add Product</div>
+                <form id="stockForm" onsubmit="handleStockForm(event)">
+                    <input type="text" class="input-filled" id="stockName" placeholder="Product name" required>
+                    <div class="input-row">
+                        <input type="number" class="input-filled" id="stockQty" placeholder="Quantity" required min="0">
+                        <input type="number" class="input-filled" id="stockPrice" placeholder="Price $" step="0.01" required>
+                    </div>
+                    <div class="input-row">
+                        <input type="number" class="input-filled" id="stockMin" placeholder="Min level" value="5" min="0">
+                        <input type="number" class="input-filled" id="stockCost" placeholder="Cost $" step="0.01">
+                    </div>
+                    <button type="submit" class="btn btn-filled btn-block" style="margin-top:8px;">💾 Save Product</button>
+                </form>
+            </div>
+
+            <div class="card">
+                <div class="card-header">🔧 Stock Adjustment</div>
+                <form id="adjustmentForm" onsubmit="handleAdjustment(event)">
+                    <select class="input-filled" id="adjProduct" required></select>
+                    <div class="chip-row" style="margin:8px 0;">
+                        <span class="chip active" onclick="setAdjType('add', this)">➕ Add</span>
+                        <span class="chip" onclick="setAdjType('remove', this)">➖ Remove</span>
+                        <span class="chip" onclick="setAdjType('damage', this)">🗑️ Damage</span>
+                    </div>
+                    <input type="hidden" id="adjType" value="add">
+                    <input type="number" class="input-filled" id="adjQty" placeholder="Quantity" required min="1">
+                    <button type="submit" class="btn btn-filled btn-block" style="background:#f57c00;">📝 Record</button>
+                </form>
+            </div>
+
+            <div class="card">
+                <div class="card-header">📋 Inventory</div>
+                <div id="stockList"></div>
+            </div>
+        </div>
+
+        <!-- EXPENSES PAGE -->
+        <div id="expensesPage" class="page">
+            <div class="card">
+                <div class="card-header">💸 Record Expense</div>
+                <form id="expenseForm" onsubmit="handleExpenseForm(event)">
+                    <input type="text" class="input-filled" id="expDesc" placeholder="Description" required>
+                    <input type="number" class="input-filled" id="expAmount" placeholder="Amount $" step="0.01" required>
+                    <select class="input-filled" id="expCategory">
+                        <option>Rent</option><option>Utilities</option><option>Stock</option>
+                        <option>Salaries</option><option>Transport</option><option>Other</option>
+                    </select>
+                    <button type="submit" class="btn btn-filled btn-block" style="margin-top:8px;">💾 Save</button>
+                </form>
+            </div>
+            <div class="card">
+                <div class="card-header">📋 Expenses</div>
+                <div id="expensesList"></div>
+            </div>
+        </div>
+
+        <!-- REPORTS PAGE -->
+        <div id="reportsPage" class="page">
+            <div class="card">
+                <div class="card-header">📊 Summary</div>
+                <button class="btn btn-filled btn-block" onclick="generateReport()">📈 Generate Report</button>
+                <button class="btn btn-outline btn-block" onclick="exportAllData()" style="margin-top:8px;">📦 Backup Data</button>
+                <button class="btn btn-outline btn-block" onclick="importDataPrompt()" style="margin-top:4px;">📥 Restore Backup</button>
+                <div id="reportOutput" style="margin-top:12px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cart FAB -->
+    <button class="cart-fab" id="cartFab" onclick="openCart()">
+        🛒
+        <span class="badge" id="cartBadge" style="display:none;">0</span>
+    </button>
+
+    <!-- Bottom Sheet (Cart) -->
+    <div class="bottom-sheet-overlay" id="cartOverlay" onclick="closeCart()"></div>
+    <div class="bottom-sheet" id="cartSheet">
+        <div class="bottom-sheet-handle"></div>
+        <div class="bottom-sheet-content">
+            <h3 style="margin-bottom:12px;">🛒 Shopping Cart</h3>
+            <div id="cartItems" style="max-height:40vh;overflow-y:auto;"></div>
+            <div style="font-size:20px;font-weight:700;text-align:right;padding:12px 0;" id="cartTotal">$0.00</div>
+            <div class="input-row" style="margin-bottom:8px;">
+                <select class="input-filled" id="paymentMethod">
+                    <option>💵 Cash</option><option>📱 EcoCash</option><option>💳 Swipe</option><option>🏦 Transfer</option>
+                </select>
+                <select class="input-filled" id="saleCashier"></select>
+            </div>
+            <button class="btn btn-accent btn-block" onclick="completeSale()">✅ Complete Sale</button>
+            <button class="btn btn-outline btn-block" onclick="clearCart()" style="margin-top:4px;">🗑️ Clear Cart</button>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <button class="nav-item active" data-page="sales" onclick="navigateTo('sales')">
+            <i class="fas fa-store"></i><span>Sell</span>
+        </button>
+        <button class="nav-item" data-page="stock" onclick="navigateTo('stock')">
+            <i class="fas fa-box"></i><span>Stock</span>
+        </button>
+        <button class="nav-item" data-page="expenses" onclick="navigateTo('expenses')">
+            <i class="fas fa-receipt"></i><span>Expenses</span>
+        </button>
+        <button class="nav-item" data-page="reports" onclick="navigateTo('reports')">
+            <i class="fas fa-chart-pie"></i><span>Reports</span>
+        </button>
+    </nav>
+
+    <!-- Snackbar -->
+    <div class="snackbar" id="snackbar"></div>
+
+    <!-- Receipt Modal -->
+    <div class="modal-overlay" id="receiptModal">
+        <div class="modal">
+            <h3 class="modal-title">🧾 Receipt</h3>
+            <div class="receipt" id="receiptContent"></div>
+            <button class="btn btn-filled btn-block" onclick="printReceipt()" style="margin-top:12px;">🖨️ Print</button>
+            <button class="btn btn-outline btn-block" onclick="closeModal('receiptModal')" style="margin-top:4px;">Close</button>
+        </div>
+    </div>
+
+    <script>
+        // ============ DATA ENGINE ============
+        const STORE_KEY = 'zimvendors_data_v2';
+        let app = JSON.parse(localStorage.getItem(STORE_KEY) || '{"sales":[],"expenses":[],"stock":[],"cashiers":["Rudo","Tinashe"],"adjustments":[]}');
+        let cart = [];
+        let currentPage = 'sales';
+
+        function persist() { localStorage.setItem(STORE_KEY, JSON.stringify(app)); }
+
+        function formatCurrency(a) { return '$' + Number(a).toFixed(2); }
+
+        function getDate() { return new Date().toISOString().split('T')[0]; }
+
+        function getTime() { return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); }
+
+        function showSnack(msg) {
+            const s = document.getElementById('snackbar');
+            s.textContent = msg;
+            s.classList.add('show');
+            clearTimeout(s._t);
+            s._t = setTimeout(() => s.classList.remove('show'), 2000);
+        }
+
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+
+        // ============ CLOCK ============
+        function updateStatusBar() {
+            const now = new Date();
+            document.getElementById('statusTime').textContent = now.toLocaleTimeString([], { hour: '2-digit',
+                minute: '2-digit' });
+        }
+        setInterval(updateStatusBar, 30000);
+        updateStatusBar();
+
+        // ============ NAVIGATION ============
+        function navigateTo(page) {
+            currentPage = page;
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(page + 'Page').classList.add('active');
+            document.querySelectorAll('.bottom-nav .nav-item').forEach(n => n.classList.remove('active'));
+            document.querySelector(`.bottom-nav [data-page="${page}"]`).classList.add('active');
+            document.getElementById('appBarTitle').textContent =
+                page === 'sales' ? '🏪 ZimVendors' :
+                page === 'stock' ? '📦 Stock' :
+                page === 'expenses' ? '💸 Expenses' : '📊 Reports';
+            refreshPage(page);
+        }
+
+        function refreshPage(page) {
+            if (page === 'sales') renderSalesPage();
+            if (page === 'stock') renderStockPage();
+            if (page === 'expenses') renderExpensesPage();
+            if (page === 'reports') renderReportsPage();
+        }
+
+        // ============ SALES PAGE ============
+        function renderSalesPage() {
+            const today = getDate();
+            const todaySales = app.sales.filter(s => s.date === today);
+            const totalToday = todaySales.reduce((s, sale) => s + (sale.qty * sale.price), 0);
+            const lowStock = app.stock.filter(p => p.qty <= p.minLevel && p.qty > 0).length;
+            const outStock = app.stock.filter(p => p.qty <= 0).length;
+
+            document.getElementById('statsRow').innerHTML = `
+                <div class="stat-chip">
+                    <div class="icon-circle icon-green"><i class="fas fa-dollar-sign"></i></div>
+                    <div class="info"><div class="value">${formatCurrency(totalToday)}</div><div class="label">Today</div></div>
+                </div>
+                <div class="stat-chip">
+                    <div class="icon-circle icon-blue"><i class="fas fa-receipt"></i></div>
+                    <div class="info"><div class="value">${todaySales.length}</div><div class="label">Sales</div></div>
+                </div>
+                <div class="stat-chip">
+                    <div class="icon-circle icon-orange"><i class="fas fa-exclamation"></i></div>
+                    <div class="info"><div class="value">${lowStock}</div><div class="label">Low</div></div>
+                </div>
+                <div class="stat-chip">
+                    <div class="icon-circle icon-red"><i class="fas fa-times"></i></div>
+                    <div class="info"><div class="value">${outStock}</div><div class="label">Out</div></div>
+                </div>
+            `;
+
+            renderProductGrid();
+            updateCartBadge();
+            document.getElementById('saleCashier').innerHTML = app.cashiers.map(c => `<option>${c}</option>`).join(
+            '');
+        }
+
+        function renderProductGrid() {
+            const search = (document.getElementById('productSearch')?.value || '').toLowerCase();
+            const filtered = app.stock.filter(p => p.name.toLowerCase().includes(search));
+            const grid = document.getElementById('productGrid');
+            if (!grid) return;
+
+            if (filtered.length === 0) {
+                grid.innerHTML =
+                    '<div class="empty-state" style="grid-column:1/-1;"><div class="icon">📦</div><p>No products yet</p><p style="font-size:12px;">Add products in Stock tab</p></div>';
+                return;
+            }
+
+            grid.innerHTML = filtered.map(p => {
+                const status = p.qty <= 0 ? 'out' : p.qty <= p.minLevel ? 'low' : 'ok';
+                const emojis = ['📦', '🥤', '🍞', '🧴', '🥫', '🧃', '🍪', '🧹', '📱', '💡'];
+                const emoji = emojis[Math.abs(p.name.length) % emojis.length];
+                return `
+                <div class="product-card" onclick="addToCart('${p.name.replace(/'/g, "\\'")}', ${p.price})">
+                    <div class="stock-dot ${status}"></div>
+                    <div class="emoji">${emoji}</div>
+                    <div class="name">${p.name}</div>
+                    <div class="price-tag">${formatCurrency(p.price)}</div>
+                    <div style="font-size:10px;color:#999;margin-top:4px;">Stock: ${p.qty}</div>
+                </div>`;
+            }).join('');
+        }
+
+        function addToCart(productName, price) {
+            const stockItem = app.stock.find(s => s.name === productName);
+            if (!stockItem || stockItem.qty <= 0) { showSnack('❌ Out of stock!'); return; }
+            const existing = cart.find(c => c.product === productName);
+            if (existing) {
+                if (stockItem.qty < existing.qty + 1) { showSnack('⚠️ Not enough stock!'); return; }
+                existing.qty++;
+            } else {
+                cart.push({ product: productName, qty: 1, price: price });
+            }
+            updateCartBadge();
+            showSnack('✅ Added: ' + productName);
+        }
+
+        function updateCartBadge() {
+            const badge = document.getElementById('cartBadge');
+            const count = cart.reduce((s, i) => s + i.qty, 0);
+            badge.textContent = count;
+            badge.style.display = count > 0 ? 'flex' : 'none';
+        }
+
+        function openCart() {
+            if (cart.length === 0) { showSnack('Cart is empty'); return; }
+            renderCartSheet();
+            document.getElementById('cartOverlay').classList.add('active');
+            document.getElementById('cartSheet').classList.add('active');
+        }
+
+        function closeCart() {
+            document.getElementById('cartOverlay').classList.remove('active');
+            document.getElementById('cartSheet').classList.remove('active');
+        }
+
+        function renderCartSheet() {
+            const container = document.getElementById('cartItems');
+            const totalEl = document.getElementById('cartTotal');
+            let total = 0;
+            container.innerHTML = cart.map((item, i) => {
+                const st = item.qty * item.price;
+                total += st;
+                return `
+                <div class="list-item">
+                    <div><strong>${item.product}</strong><br><small>${formatCurrency(item.price)} × ${item.qty}</small></div>
+                    <div style="text-align:right;"><strong>${formatCurrency(st)}</strong><br>
+                        <button onclick="removeCartItem(${i})" style="background:none;border:none;color:var(--danger);cursor:pointer;font-size:12px;">Remove</button>
+                    </div>
+                </div>`;
+            }).join('');
+            totalEl.textContent = formatCurrency(total);
+        }
+
+        function removeCartItem(i) { cart.splice(i, 1);
+            updateCartBadge();
+            renderCartSheet(); if (cart.length === 0) closeCart(); }
+
+        function clearCart() { cart = [];
+            updateCartBadge();
+            closeCart();
+            showSnack('Cart cleared'); }
+
+        function completeSale() {
+            if (cart.length === 0) { showSnack('Cart is empty!'); return; }
+            const cashier = document.getElementById('saleCashier')?.value || 'Unknown';
+            const payment = document.getElementById('paymentMethod')?.value || 'Cash';
+            const date = getDate();
+            const time = getTime();
+            const receiptItems = [];
+
+            for (const item of cart) {
+                const si = app.stock.find(s => s.name === item.product);
+                if (!si || si.qty < item.qty) { showSnack('❌ Stock issue: ' + item.product); return; }
+                si.qty -= item.qty;
+                app.sales.push({ product: item.product, qty: item.qty, price: item.price, cashier, paymentMethod: payment,
+                    date, time });
+                receiptItems.push({ ...item, subtotal: item.qty * item.price });
+            }
+
+            persist();
+            showReceipt(receiptItems, cashier, payment, date, time);
+            cart = [];
+            updateCartBadge();
+            closeCart();
+            renderSalesPage();
+            showSnack('✅ Sale complete!');
+        }
+
+        function showReceipt(items, cashier, payment, date, time) {
+            const total = items.reduce((s, i) => s + i.subtotal, 0);
+            document.getElementById('receiptContent').innerHTML = `
+                <div class="center"><strong>🧾 ZIMVENDORS</strong><br><small>${date} ${time}</small></div>
+                <div class="divider"></div>
+                ${items.map(i => `<div style="display:flex;justify-content:space-between;"><span>${i.product} ×${i.qty}</span><span>${formatCurrency(i.subtotal)}</span></div>`).join('')}
+                <div class="divider"></div>
+                <div class="total" style="display:flex;justify-content:space-between;"><span>TOTAL</span><span>${formatCurrency(total)}</span></div>
+                <div style="margin-top:8px;font-size:11px;">Cashier: ${cashier} | ${payment}</div>
+                <div class="divider"></div>
+                <div class="center">Thank you! 🛍️</div>
+            `;
+            document.getElementById('receiptModal').classList.add('active');
+        }
+
+        function printReceipt() {
+            const content = document.getElementById('receiptContent').innerHTML;
+            const win = window.open('', '_blank', 'width=300,height=500');
+            win.document.write(
+                '<html><head><title>Receipt</title></head><body><div style="font-family:monospace;font-size:12px;padding:10px;">' +
+                content + '</div></body></html>');
+            win.document.close();
+            setTimeout(() => win.print(), 500);
+        }
+
+        // ============ STOCK PAGE ============
+        function renderStockPage() {
+            renderStockList();
+            document.getElementById('adjProduct').innerHTML = '<option value="">-- Select --</option>' +
+                app.stock.map(p => `<option>${p.name}</option>`).join('');
+        }
+
+        function handleStockForm(e) {
+            e.preventDefault();
+            const name = document.getElementById('stockName').value.trim();
+            const qty = parseInt(document.getElementById('stockQty').value);
+            const price = parseFloat(document.getElementById('stockPrice').value);
+            const min = parseInt(document.getElementById('stockMin').value) || 5;
+            const cost = parseFloat(document.getElementById('stockCost').value) || 0;
+            if (!name || isNaN(qty) || isNaN(price)) { showSnack('Fill required fields'); return; }
+            const existing = app.stock.find(s => s.name.toLowerCase() === name.toLowerCase());
+            if (existing) { existing.qty = qty;
+                existing.price = price;
+                existing.minLevel = min;
+                existing.cost = cost; } else { app.stock.push({ name, qty, price, minLevel: min, cost }); }
+            persist();
+            document.getElementById('stockForm').reset();
+            renderStockPage();
+            showSnack('✅ Product saved');
+        }
+
+        function setAdjType(type, el) {
+            document.getElementById('adjType').value = type;
+            el.parentElement.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+            el.classList.add('active');
+        }
+
+        function handleAdjustment(e) {
+            e.preventDefault();
+            const product = document.getElementById('adjProduct').value;
+            const type = document.getElementById('adjType').value;
+            const qty = parseInt(document.getElementById('adjQty').value);
+            if (!product || isNaN(qty) || qty <= 0) { showSnack('Invalid adjustment'); return; }
+            const si = app.stock.find(s => s.name === product);
+            if (!si) { showSnack('Product not found'); return; }
+            if (type === 'add') si.qty += qty;
+            else { if (si.qty < qty) { showSnack('Not enough stock'); return; }
+                si.qty -= qty; }
+            app.adjustments.push({ product, type, qty, date: getDate(), time: getTime() });
+            persist();
+            document.getElementById('adjustmentForm').reset();
+            renderStockPage();
+            showSnack('✅ Stock adjusted');
+        }
+
+        function renderStockList() {
+            const el = document.getElementById('stockList');
+            if (app.stock.length === 0) {
+                el.innerHTML = '<div class="empty-state"><div class="icon">📦</div><p>No products</p></div>';
+                return;
+            }
+            el.innerHTML = app.stock.map(p => {
+                const status = p.qty <= 0 ? '🔴' : p.qty <= p.minLevel ? '🟠' : '🟢';
+                return `
+                <div class="list-item">
+                    <div><strong>${status} ${p.name}</strong><br><small>Stock: ${p.qty} | Min: ${p.minLevel}</small></div>
+                    <div style="text-align:right;"><strong>${formatCurrency(p.price)}</strong><br><small>Value: ${formatCurrency(p.qty*p.price)}</small></div>
+                </div>`;
+            }).join('');
+        }
+
+        // ============ EXPENSES PAGE ============
+        function renderExpensesPage() { renderExpensesList(); }
+
+        function handleExpenseForm(e) {
+            e.preventDefault();
+            const desc = document.getElementById('expDesc').value.trim();
+            const amount = parseFloat(document.getElementById('expAmount').value);
+            const category = document.getElementById('expCategory').value;
+            if (!desc || amount <= 0) { showSnack('Invalid expense'); return; }
+            app.expenses.push({ desc, amount, category, date: getDate(), time: getTime() });
+            persist();
+            document.getElementById('expenseForm').reset();
+            renderExpensesList();
+            showSnack('✅ Expense saved');
+        }
+
+        function renderExpensesList() {
+            const el = document.getElementById('expensesList');
+            const list = [...app.expenses].reverse();
+            if (list.length === 0) {
+                el.innerHTML = '<div class="empty-state"><div class="icon">💸</div><p>No expenses</p></div>';
+                return;
+            }
+            el.innerHTML = list.slice(0, 20).map(e => `
+                <div class="list-item">
+                    <div><strong>${e.desc}</strong><br><small>${e.category} • ${e.date}</small></div>
+                    <div style="text-align:right;color:var(--danger);"><strong>-${formatCurrency(e.amount)}</strong></div>
+                </div>
+            `).join('');
+        }
+
+        // ============ REPORTS PAGE ============
+        function renderReportsPage() {}
+
+        function generateReport() {
+            const ts = app.sales.reduce((s, sale) => s + (sale.qty * sale.price), 0);
+            const te = app.expenses.reduce((s, e) => s + e.amount, 0);
+            const profit = ts - te;
+            document.getElementById('reportOutput').innerHTML = `
+                <div style="background:#f9fafb;padding:16px;border-radius:12px;">
+                    <p><strong>Total Sales:</strong> ${formatCurrency(ts)}</p>
+                    <p><strong>Expenses:</strong> ${formatCurrency(te)}</p>
+                    <p><strong>Profit:</strong> <span style="color:${profit>=0?'#2e7d32':'#d32f2f'};">${formatCurrency(profit)}</span></p>
+                    <hr><p><strong>Products:</strong> ${app.stock.length} | <strong>Stock Value:</strong> ${formatCurrency(app.stock.reduce((s,p)=>s+(p.qty*p.price),0))}</p>
+                </div>`;
+        }
+
+        function exportAllData() {
+            const blob = new Blob([JSON.stringify({ data: app, date: new Date().toISOString() }, null, 2)], { type: 'application/json' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'zimvendors_backup.json';
+            a.click();
+            showSnack('✅ Backup saved');
+        }
+
+        function importDataPrompt() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = function(ev) {
+                    try {
+                        const imported = JSON.parse(ev.target.result);
+                        if (imported.data && confirm('Restore backup? This replaces current data.')) {
+                            app = imported.data;
+                            persist();
+                            cart = [];
+                            refreshAll();
+                            showSnack('✅ Data restored');
+                        }
+                    } catch (err) { showSnack('❌ Invalid file'); }
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        }
+
+        function refreshAll() {
+            renderSalesPage();
+            renderStockPage();
+            renderExpensesPage();
+        }
+
+        // ============ INIT ============
+        function init() {
+            renderSalesPage();
+            renderStockPage();
+            renderExpensesPage();
+        }
+        init();
+        console.log('✅ ZimVendors AP • Android App Ready');
+    </script>
+</body>
+</html>      box-shadow: var(--shadow); 
       display: flex;
       flex-direction: column;
     }
