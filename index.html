@@ -1,1064 +1,1521 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    
-    <!-- PWA Meta Tags -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, shrink-to-fit=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="ZimVendors AP">
+    <meta name="apple-mobile-web-app-title" content="ZimVendors">
     <meta name="theme-color" content="#006b3c">
     <meta name="mobile-web-app-capable" content="yes">
-    <meta name="description" content="ZimVendors AP - World Class Multi-Vendor POS System">
-    
-    <!-- PWA Manifest -->
-    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIlppbVZlbmRvcnMgQVAiLAogICJzaG9ydF9uYW1lIjogIlppbVZlbmRvcnMiLAogICJzdGFydF91cmwiOiAiLi8iLAogICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLAogICJiYWNrZ3JvdW5kX2NvbG9yIjogIiMwMDZiM2MiLAogICJ0aGVtZV9jb2xvciI6ICIjMDA2YjNjIiwKICAib3JpZW50YXRpb24iOiAicG9ydHJhaXQiLAogICJpY29ucyI6IFtdCn0=">
-    
-    <!-- Logo Preload -->
-    <link rel="preload" href="https://i.ibb.co/99RTk9Ls/logo.png" as="image">
-    
-    <title>ZimVendors AP • Complete POS</title>
+    <meta name="HandheldFriendly" content="true">
+    <meta name="description" content="ZimVendors AP - Ultimate Offline-First POS System for Zimbabwe">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" href="/icon-192.png">
+    <title>ZimVendors AP • Ultimate POS</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    
+    <script src="https://cdn.jsdelivr.net/npm/localforage@1.10.0/dist/localforage.min.js"></script>
     <style>
         :root {
-            --primary: #006b3c;
-            --primary-dark: #004d2b;
-            --primary-light: #e8f5e9;
-            --accent: #ffd966;
-            --danger: #d32f2f;
-            --success: #2e7d32;
-            --warning: #f57c00;
-            --info: #1976d2;
-            --surface: #ffffff;
-            --background: #f0f2f5;
-            --text: #1a1a1a;
-            --text-light: #666666;
-            --bottom-nav: 64px;
-            --status-bar: env(safe-area-inset-top, 0px);
+            --p: #006b3c; --pd: #004d2b; --pl: #e8f5e9; --a: #ffd966;
+            --d: #d32f2f; --s: #2e7d32; --w: #f57c00; --i: #1976d2;
+            --bg: #f5f5f5; --sf: #ffffff; --t: #1a1a1a; --g: #666;
+            --bn: 60px; --r: 14px; --br: 25px;
+            --safe: env(safe-area-inset-bottom, 0px);
+            --status: env(safe-area-inset-top, 0px);
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.12);
+            --shadow-lg: 0 8px 24px rgba(0,0,0,0.16);
+            --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-
-        body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background: var(--background);
-            color: var(--text);
-            line-height: 1.5;
-            overflow-x: hidden;
-            -webkit-font-smoothing: antialiased;
-            padding-top: var(--status-bar);
+        .dark-mode {
+            --p: #00c853; --pd: #009624; --pl: #1b5e20; --a: #ffd740;
+            --bg: #121212; --sf: #1e1e1e; --t: #ffffff; --g: #aaaaaa;
         }
-
-        /* Logo Animation */
-        .app-logo {
-            width: 80px;
-            height: 80px;
-            border-radius: 20px;
-            object-fit: contain;
-            background: white;
-            padding: 8px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
-            animation: logoFloat 3s ease-in-out infinite;
-        }
-        @keyframes logoFloat {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-        .app-logo-sm {
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
-            object-fit: contain;
-            background: white;
-            padding: 3px;
-            margin-right: 8px;
-        }
-
-        /* Splash */
-        .splash {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(135deg, #004d2b, #006b3c);
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            z-index: 9999; transition: opacity 0.5s;
-        }
-        .splash.hide { opacity: 0; pointer-events: none; }
-        .splash .title { color: white; font-size: 28px; font-weight: 700; margin-top: 20px; }
-        .splash .subtitle { color: var(--accent); font-size: 14px; margin-top: 8px; }
-        .splash .loader {
-            width: 40px; height: 40px; border: 3px solid rgba(255,255,255,0.3);
-            border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite; margin-top: 24px;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        /* Login */
-        .login-screen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--background); display: flex; align-items: center; justify-content: center;
-            z-index: 9000; padding: 20px;
-        }
-        .login-screen.hide { display: none; }
-        .login-card {
-            background: var(--surface); border-radius: 24px; padding: 32px 24px;
-            width: 100%; max-width: 400px; box-shadow: 0 8px 32px rgba(0,0,0,0.12); text-align: center;
-        }
-        .login-card h2 { color: var(--primary); font-size: 24px; margin: 12px 0 4px; }
-        .login-card .subtitle { color: var(--text-light); font-size: 13px; margin-bottom: 24px; }
-
-        .input {
-            background: #f5f5f5; border: 2px solid transparent; border-radius: 12px;
-            padding: 14px 16px; font-size: 15px; width: 100%; transition: all 0.2s;
-            color: var(--text); font-family: inherit; margin-bottom: 12px; outline: none;
-        }
-        .input:focus { border-color: var(--primary); background: white; box-shadow: 0 2px 8px rgba(0,107,60,0.15); }
-
-        .btn {
-            padding: 14px 24px; border: none; border-radius: 12px; font-weight: 600;
-            font-size: 15px; cursor: pointer; transition: all 0.2s; font-family: inherit;
-            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-        }
-        .btn:active { transform: scale(0.97); }
-        .btn:disabled { opacity: 0.7; cursor: not-allowed; }
-        .btn-primary { background: var(--primary); color: white; }
-        .btn-accent { background: var(--accent); color: var(--text); }
-        .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); }
-        .btn-danger { background: var(--danger); color: white; }
-        .btn-success { background: var(--success); color: white; }
-        .btn-block { width: 100%; }
-        .btn-sm { padding: 8px 16px; font-size: 13px; width: auto; }
-
-        .msg-error { background: #ffebee; color: #c62828; padding: 10px; border-radius: 8px; margin-bottom: 12px; font-size: 13px; display: none; }
-        .msg-error.show { display: block; }
-        .msg-success { background: #e8f5e9; color: #2e7d32; padding: 10px; border-radius: 8px; margin-bottom: 12px; font-size: 13px; display: none; }
-        .msg-success.show { display: block; }
-
-        /* App Bar */
-        .app-bar {
-            position: fixed; top: 0; left: 0; right: 0; height: 56px;
-            background: var(--primary); color: white; display: flex; align-items: center;
-            padding: 0 12px; z-index: 999; box-shadow: 0 2px 8px rgba(0,0,0,0.15); gap: 8px;
-        }
-        .app-bar .title { font-size: 18px; font-weight: 500; flex: 1; text-align: center; display: flex; align-items: center; justify-content: center; }
-        .icon-btn { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 50%; cursor: pointer; font-size: 18px; }
-        .icon-btn:active { background: rgba(255,255,255,0.2); }
-        .sync-badge { font-size: 10px; padding: 3px 8px; border-radius: 10px; background: rgba(255,255,255,0.15); }
-
-        /* Main Content */
-        .main-content { margin-top: 56px; padding: 16px; padding-bottom: calc(var(--bottom-nav) + 24px); min-height: 100vh; }
-        .page { display: none; animation: pageIn 0.3s ease; }
-        .page.active { display: block; }
-        @keyframes pageIn { from{opacity:0;transform:translateY(12px);} to{opacity:1;transform:translateY(0);} }
-
-        .card { background: var(--surface); border-radius: 16px; padding: 16px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
-        .card-header { font-size: 16px; font-weight: 600; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; }
-
-        .stats-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 8px; margin-bottom: 16px; }
-        .stat-card { background: var(--surface); border-radius: 16px; padding: 14px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); border-left: 3px solid var(--accent); }
-        .stat-card .value { font-size: 22px; font-weight: 700; }
-        .stat-card .label { font-size: 11px; color: var(--text-light); text-transform: uppercase; font-weight: 600; margin-top: 2px; }
-
-        .search-bar { background: #f5f5f5; border-radius: 24px; padding: 10px 16px; display: flex; align-items: center; gap: 8px; margin-bottom: 12px; border: 2px solid transparent; }
-        .search-bar:focus-within { border-color: var(--primary); background: white; }
-        .search-bar input { border: none; background: transparent; flex: 1; font-size: 14px; outline: none; color: var(--text); font-family: inherit; }
-
-        /* Product Grid */
-        .product-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; }
-        .product-card {
-            background: var(--surface); border-radius: 12px; padding: 12px 8px; text-align: center;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.06); cursor: pointer; transition: all 0.15s;
-            border: 2px solid transparent; position: relative;
-        }
-        .product-card:active { transform: scale(0.95); border-color: var(--primary); }
-        .product-card .trolley-icon {
-            font-size: 32px; margin-bottom: 4px; color: var(--primary);
-        }
-        .product-card .name { font-weight: 600; font-size: 12px; margin-bottom: 4px; line-height: 1.3; }
-        .product-card .price-tag {
-            background: var(--primary-light); color: var(--primary); padding: 3px 10px;
-            border-radius: 10px; font-weight: 700; font-size: 13px; display: inline-block;
-        }
-        .product-card .stock-dot { position: absolute; top: 6px; right: 6px; width: 8px; height: 8px; border-radius: 50%; }
-        .dot-ok{background:var(--success);} .dot-low{background:var(--warning);} .dot-out{background:var(--danger);}
-
-        /* Cart FAB */
-        .cart-fab {
-            position: fixed; bottom: calc(var(--bottom-nav) + 16px); right: 16px;
-            width: 56px; height: 56px; border-radius: 50%; background: var(--accent);
-            border: none; font-size: 22px; cursor: pointer; box-shadow: 0 4px 16px rgba(0,0,0,0.2);
-            z-index: 100; display: flex; align-items: center; justify-content: center; transition: all 0.2s;
-        }
-        .cart-fab:active { transform: scale(0.9); }
-        .cart-fab .badge {
-            position: absolute; top: -4px; right: -4px; background: var(--danger); color: white;
-            min-width: 22px; height: 22px; border-radius: 50%; font-size: 11px; font-weight: 700;
-            display: flex; align-items: center; justify-content: center; padding: 0 4px;
-        }
-
-        /* Bottom Sheet */
-        .sheet-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 500; }
-        .sheet-overlay.active { display: block; }
-        .bottom-sheet {
-            position: fixed; bottom: 0; left: 0; right: 0; background: var(--surface);
-            border-radius: 20px 20px 0 0; max-height: 75vh; z-index: 501;
-            transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
-            display: flex; flex-direction: column; box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
-        }
-        .bottom-sheet.active { transform: translateY(0); }
-        .sheet-handle { width: 32px; height: 4px; background: #ccc; border-radius: 2px; margin: 12px auto; }
-        .sheet-content { padding: 0 16px 16px; overflow-y: auto; flex: 1; }
-
-        /* Bottom Nav */
-        .bottom-nav {
-            position: fixed; bottom: 0; left: 0; right: 0; height: var(--bottom-nav);
-            background: var(--surface); display: flex; box-shadow: 0 -2px 10px rgba(0,0,0,0.08);
-            z-index: 600; padding-bottom: env(safe-area-inset-bottom,0);
-        }
-        .nav-item {
-            flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
-            cursor: pointer; border: none; background: none; color: var(--text-light);
-            font-family: inherit; padding: 8px 0; transition: all 0.2s; position: relative;
-        }
-        .nav-item i { font-size: 20px; margin-bottom: 2px; }
-        .nav-item span { font-size: 10px; font-weight: 500; }
-        .nav-item.active { color: var(--primary); }
-        .nav-item.active::before {
-            content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
-            width: 20px; height: 3px; background: var(--primary); border-radius: 0 0 3px 3px;
-        }
-
-        .list-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f0f0f0; }
-        .list-item:last-child { border-bottom: none; }
-
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 700; align-items: center; justify-content: center; padding: 16px; }
-        .modal-overlay.active { display: flex; }
-        .modal {
-            background: var(--surface); border-radius: 20px; padding: 24px; width: 100%;
-            max-width: 500px; max-height: 85vh; overflow-y: auto; box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-            animation: modalIn 0.3s ease;
-        }
-        @keyframes modalIn { from{opacity:0;transform:scale(0.9);} to{opacity:1;transform:scale(1);} }
-
-        .snackbar {
-            position: fixed; bottom: calc(var(--bottom-nav) + 20px); left: 50%;
-            transform: translateX(-50%) translateY(100px); background: #323232; color: white;
-            padding: 12px 24px; border-radius: 8px; font-size: 13px; font-weight: 500;
-            z-index: 800; transition: transform 0.3s ease; white-space: nowrap; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-        }
-        .snackbar.show { transform: translateX(-50%) translateY(0); }
-
-        .receipt { background: #fffef5; padding: 20px; border-radius: 8px; font-family: 'Courier New',monospace; font-size: 13px; line-height: 1.6; border: 2px dashed #ccc; }
-        .receipt .c{text-align:center;} .receipt .d{border-top:1px dashed #999;margin:8px 0;}
-
-        .tabs { display: flex; gap: 4px; margin-bottom: 12px; overflow-x: auto; }
-        .tab { padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap; background: #f5f5f5; border: none; font-family: inherit; }
-        .tab.active { background: var(--primary); color: white; }
-
-        .badge { padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; display: inline-block; }
-        .badge-s{background:#e8f5e9;color:#2e7d32;} .badge-d{background:#ffebee;color:#c62828;} .badge-w{background:#fff3e0;color:#e65100;} .badge-i{background:#e3f2fd;color:#1565c0;}
-
-        .hl { background: linear-gradient(135deg,var(--primary-light),#c8e6c9); border-radius: 12px; padding: 16px; margin-bottom: 12px; }
-        .hl .bn { font-size: 32px; font-weight: 800; color: var(--primary); }
-
-        .empty-state { text-align: center; padding: 40px 20px; color: var(--text-light); }
-        .empty-state .icon { font-size: 48px; margin-bottom: 12px; opacity: 0.5; }
-
-        .install-prompt {
-            position: fixed; bottom: calc(var(--bottom-nav) + 80px); left: 50%; transform: translateX(-50%);
-            background: white; padding: 12px 20px; border-radius: 20px; box-shadow: 0 4px 16px rgba(0,0,0,0.2);
-            z-index: 200; display: none; align-items: center; gap: 12px; font-size: 13px; font-weight: 600;
-        }
-        .install-prompt.show { display: flex; }
-
-        @media(min-width:768px){
-            .main-content{max-width:700px;margin:0 auto;}
-            .product-grid{grid-template-columns:repeat(4,1fr);}
-            .bottom-nav{max-width:700px;left:50%;transform:translateX(-50%);border-radius:20px 20px 0 0;}
+        * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; -webkit-touch-callout:none; -webkit-user-select:none; user-select:none; }
+        html,body { height:100%; width:100%; overflow:hidden; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubuntu,sans-serif; background:var(--bg); color:var(--t); font-size:16px; line-height:1.5; touch-action:manipulation; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
+        
+        .pin-screen { position:fixed; inset:0; z-index:10000; background:var(--bg); display:flex; align-items:center; justify-content:center; flex-direction:column; transition:opacity 0.3s ease; }
+        .pin-screen.hide { opacity:0; pointer-events:none; }
+        .pin-logo { font-size:64px; margin-bottom:16px; animation:pinPulse 2s infinite; }
+        @keyframes pinPulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.05)} }
+        .pin-title { font-size:24px; font-weight:700; color:var(--p); margin-bottom:8px; }
+        .pin-subtitle { font-size:14px; color:var(--g); margin-bottom:24px; }
+        .pin-dots { display:flex; gap:16px; margin-bottom:24px; }
+        .pin-dot { width:18px; height:18px; border-radius:50%; border:2px solid var(--p); transition:all 0.2s ease; }
+        .pin-dot.filled { background:var(--p); transform:scale(1.2); box-shadow:0 0 12px rgba(0,107,60,0.4); }
+        .pin-error { color:var(--d); font-size:14px; margin-bottom:12px; display:none; font-weight:500; }
+        .pin-pad { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; max-width:280px; width:90%; }
+        .pin-key { aspect-ratio:1; font-size:24px; font-weight:700; border:2px solid #ccc; border-radius:16px; background:var(--sf); color:var(--t); cursor:pointer; transition:all 0.15s ease; display:flex; align-items:center; justify-content:center; min-height:60px; }
+        .pin-key:active { background:var(--pl); border-color:var(--p); transform:scale(0.92); }
+        .pin-key.enter-btn { background:var(--p); color:#fff; border-color:var(--p); }
+        .pin-key.clear-btn { background:var(--d); color:#fff; border-color:var(--d); }
+        .pin-reset-btn { margin-top:20px; font-size:13px; color:var(--g); background:none; border:none; cursor:pointer; text-decoration:underline; }
+        
+        .app-bar { position:fixed; top:0; left:0; right:0; height:52px; background:var(--p); color:#fff; display:flex; align-items:center; padding:0 10px; z-index:999; gap:6px; padding-top:var(--status); box-shadow:0 2px 8px rgba(0,0,0,0.2); }
+        .app-bar-title { font-size:17px; font-weight:600; flex:1; text-align:center; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .app-bar-btn { width:40px; height:40px; display:flex; align-items:center; justify-content:center; border-radius:50%; cursor:pointer; font-size:18px; border:none; background:transparent; color:#fff; transition:background 0.15s; }
+        .app-bar-btn:active { background:rgba(255,255,255,0.25); }
+        .sync-badge { font-size:10px; padding:3px 8px; border-radius:10px; background:rgba(255,255,255,0.15); white-space:nowrap; }
+        
+        .main-content { position:fixed; top:52px; left:0; right:0; bottom:var(--bn); overflow-y:auto; overflow-x:hidden; -webkit-overflow-scrolling:touch; padding:10px 12px; background:var(--bg); scroll-behavior:smooth; }
+        .page { display:none; animation:pageIn 0.3s ease; min-height:100%; }
+        .page.active { display:block; }
+        @keyframes pageIn { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+        
+        .card { background:var(--sf); border-radius:var(--r); padding:14px; margin-bottom:10px; box-shadow:var(--shadow-sm); transition:box-shadow var(--transition); }
+        .card-header { font-size:15px; font-weight:600; margin-bottom:12px; display:flex; align-items:center; justify-content:space-between; }
+        .stats-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:8px; margin-bottom:10px; }
+        .stat-card { background:var(--sf); border-radius:var(--r); padding:12px 14px; box-shadow:var(--shadow-sm); border-left:3px solid var(--a); cursor:pointer; transition:all var(--transition); }
+        .stat-card:active { transform:scale(0.97); box-shadow:var(--shadow-md); }
+        .stat-card .val { font-size:20px; font-weight:700; color:var(--t); }
+        .stat-card .lbl { font-size:10px; color:var(--g); text-transform:uppercase; font-weight:600; letter-spacing:0.5px; margin-top:2px; }
+        
+        .search-bar { display:flex; align-items:center; background:var(--sf); border-radius:22px; padding:10px 14px; margin-bottom:10px; gap:8px; border:2px solid #e0e0e0; transition:all var(--transition); }
+        .search-bar:focus-within { border-color:var(--p); box-shadow:0 0 0 3px rgba(0,107,60,0.1); }
+        .search-bar input { border:none; background:transparent; flex:1; font-size:14px; outline:none; color:var(--t); font-family:inherit; }
+        .search-bar i { color:var(--g); font-size:14px; }
+        
+        .product-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:7px; }
+        .product-card { background:var(--sf); border-radius:12px; padding:10px 6px; text-align:center; box-shadow:var(--shadow-sm); cursor:pointer; transition:all 0.12s ease; border:2px solid transparent; position:relative; touch-action:manipulation; }
+        .product-card:active { transform:scale(0.93); border-color:var(--p); background:var(--pl); }
+        .product-card .p-emoji { font-size:28px; margin-bottom:4px; }
+        .product-card .p-name { font-weight:600; font-size:11px; margin-bottom:3px; line-height:1.3; color:var(--t); }
+        .product-card .p-price { background:var(--pl); color:var(--p); padding:3px 10px; border-radius:10px; font-weight:700; font-size:12px; display:inline-block; }
+        .product-card .p-stock { font-size:9px; color:var(--g); margin-top:3px; }
+        .product-card.disabled { opacity:0.45; pointer-events:none; }
+        .stock-dot { position:absolute; top:5px; right:5px; width:7px; height:7px; border-radius:50%; }
+        .s-ok{background:var(--s)} .s-low{background:var(--w)} .s-out{background:var(--d)}
+        
+        .btn { display:inline-flex; align-items:center; justify-content:center; gap:6px; padding:12px 20px; border:none; border-radius:var(--br); font-weight:600; font-size:14px; cursor:pointer; font-family:inherit; transition:all 0.15s ease; letter-spacing:0.3px; position:relative; overflow:hidden; }
+        .btn:active { transform:scale(0.95); }
+        .btn:disabled { opacity:0.6; pointer-events:none; }
+        .btn-p { background:var(--p); color:#fff; } .btn-a { background:var(--a); color:var(--t); } .btn-o { background:transparent; border:2px solid var(--p); color:var(--p); } .btn-d { background:var(--d); color:#fff; } .btn-s { background:var(--s); color:#fff; } .btn-i { background:var(--i); color:#fff; } .btn-w { background:var(--w); color:#fff; }
+        .btn-block { width:100%; justify-content:center; } .btn-sm { padding:7px 14px; font-size:12px; } .btn-xs { padding:5px 10px; font-size:10px; border-radius:14px; }
+        
+        .form-group { margin-bottom:10px; }
+        .form-group label { display:block; font-size:11px; font-weight:600; color:var(--g); margin-bottom:4px; text-transform:uppercase; letter-spacing:0.5px; }
+        .input,select,textarea { width:100%; padding:12px 14px; border:2px solid #e0e0e0; border-radius:10px; font-size:14px; background:var(--sf); color:var(--t); font-family:inherit; outline:none; transition:all var(--transition); -webkit-appearance:none; }
+        .input:focus,select:focus,textarea:focus { border-color:var(--p); box-shadow:0 0 0 3px rgba(0,107,60,0.08); }
+        select.input { background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M6 8L1 3h10z' fill='%23666'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 12px center; padding-right:36px; }
+        textarea.input { resize:vertical; min-height:60px; }
+        .input-row { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+        
+        .cart-fab { position:fixed; bottom:calc(var(--bn) + 14px); right:14px; width:54px; height:54px; border-radius:50%; background:var(--a); border:none; font-size:22px; cursor:pointer; z-index:200; box-shadow:var(--shadow-lg); display:flex; align-items:center; justify-content:center; transition:all var(--transition); }
+        .cart-fab:active { transform:scale(0.88); }
+        .cart-fab .badge { position:absolute; top:-4px; right:-4px; background:var(--d); color:#fff; min-width:22px; height:22px; border-radius:50%; font-size:11px; font-weight:700; display:flex; align-items:center; justify-content:center; padding:0 4px; box-shadow:0 2px 6px rgba(211,47,47,0.4); }
+        
+        .sheet-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:500; }
+        .sheet-overlay.active { display:block; animation:fadeIn 0.2s; }
+        @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+        .bottom-sheet { position:fixed; bottom:0; left:0; right:0; max-height:78vh; background:var(--sf); border-radius:18px 18px 0 0; z-index:501; transform:translateY(100%); transition:transform 0.3s cubic-bezier(0.4,0,0.2,1); display:flex; flex-direction:column; box-shadow:0 -4px 20px rgba(0,0,0,0.2); padding-bottom:var(--safe); }
+        .bottom-sheet.active { transform:translateY(0); }
+        .sheet-handle { width:32px; height:4px; background:#d0d0d0; border-radius:2px; margin:10px auto; flex-shrink:0; }
+        .sheet-content { padding:0 14px 14px; overflow-y:auto; flex:1; -webkit-overflow-scrolling:touch; }
+        
+        .bottom-nav { position:fixed; bottom:0; left:0; right:0; height:var(--bn); background:var(--sf); display:flex; z-index:600; box-shadow:0 -1px 6px rgba(0,0,0,0.08); padding-bottom:var(--safe); }
+        .nav-item { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; border:none; background:none; color:var(--g); font-family:inherit; padding:6px 0; transition:color 0.2s; position:relative; }
+        .nav-item i { font-size:18px; margin-bottom:2px; } .nav-item span { font-size:9px; font-weight:500; letter-spacing:0.3px; }
+        .nav-item.active { color:var(--p); }
+        .nav-item.active::before { content:''; position:absolute; top:0; left:50%; transform:translateX(-50%); width:20px; height:2px; background:var(--p); border-radius:0 0 2px 2px; }
+        
+        .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:700; align-items:flex-end; justify-content:center; }
+        .modal-overlay.active { display:flex; }
+        .modal { background:var(--sf); border-radius:18px 18px 0 0; padding:20px; width:100%; max-width:520px; max-height:85vh; overflow-y:auto; -webkit-overflow-scrolling:touch; animation:slideUp 0.3s ease; padding-bottom:calc(20px + var(--safe)); }
+        @keyframes slideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
+        .modal-header { font-size:17px; font-weight:600; margin-bottom:16px; display:flex; align-items:center; justify-content:space-between; }
+        .modal-close { width:32px; height:32px; display:flex; align-items:center; justify-content:center; border-radius:50%; cursor:pointer; font-size:18px; color:var(--g); background:none; border:none; }
+        
+        .snackbar { position:fixed; bottom:calc(var(--bn) + 20px); left:50%; transform:translateX(-50%) translateY(100px); background:#323232; color:#fff; padding:12px 22px; border-radius:20px; font-size:13px; font-weight:500; z-index:800; transition:transform 0.3s ease; white-space:nowrap; box-shadow:var(--shadow-lg); max-width:90vw; overflow:hidden; text-overflow:ellipsis; }
+        .snackbar.show { transform:translateX(-50%) translateY(0); }
+        .snackbar.success { background:var(--s); } .snackbar.error { background:var(--d); } .snackbar.warning { background:var(--w); }
+        
+        .receipt { background:#fff; color:#000; padding:16px; font-family:'Courier New',Courier,monospace; font-size:11px; line-height:1.4; width:80mm; margin:0 auto; border:1px solid #ccc; }
+        .receipt .center { text-align:center; } .receipt .divider { border-top:1px dashed #000; margin:6px 0; } .receipt .total-row { font-size:14px; font-weight:700; } .receipt .footer { font-size:9px; text-align:center; margin-top:8px; }
+        @media print { body * { visibility:hidden; } .receipt,.receipt * { visibility:visible; } .receipt { position:absolute; left:0; top:0; border:none; } }
+        
+        .tabs { display:flex; gap:4px; margin-bottom:10px; overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none; padding-bottom:2px; }
+        .tabs::-webkit-scrollbar { display:none; }
+        .tab { padding:8px 16px; border-radius:18px; font-size:11px; font-weight:600; cursor:pointer; white-space:nowrap; background:#e0e0e0; border:none; color:var(--t); font-family:inherit; flex-shrink:0; transition:all var(--transition); }
+        .tab.active { background:var(--p); color:#fff; }
+        
+        .list-item { display:flex; justify-content:space-between; align-items:center; padding:11px 0; border-bottom:1px solid rgba(0,0,0,0.06); }
+        .list-item:last-child { border-bottom:none; }
+        .list-item .li-left { flex:1; min-width:0; } .list-item .li-right { text-align:right; flex-shrink:0; }
+        .list-item .li-title { font-weight:600; font-size:13px; } .list-item .li-sub { font-size:10px; color:var(--g); }
+        
+        .highlight-box { background:linear-gradient(135deg,var(--pl),#c8e6c9); border-radius:12px; padding:16px; margin-bottom:10px; text-align:center; }
+        .highlight-box .big-number { font-size:30px; font-weight:800; color:var(--p); }
+        .highlight-box .big-label { font-size:10px; color:var(--g); text-transform:uppercase; letter-spacing:1px; }
+        
+        .badge { display:inline-block; padding:3px 8px; border-radius:10px; font-size:10px; font-weight:600; letter-spacing:0.3px; }
+        .badge-success { background:#e8f5e9; color:#2e7d32; } .badge-danger { background:#ffebee; color:#c62828; } .badge-warning { background:#fff3e0; color:#e65100; } .badge-info { background:#e3f2fd; color:#1565c0; }
+        
+        .empty-state { text-align:center; padding:40px 20px; color:var(--g); }
+        .empty-state .empty-icon { font-size:48px; margin-bottom:10px; opacity:0.5; } .empty-state .empty-text { font-size:14px; } .empty-state .empty-sub { font-size:11px; margin-top:4px; }
+        
+        @media (min-width:600px) {
+            .main-content { max-width:640px; left:50%; transform:translateX(-50%); border-left:1px solid #eee; border-right:1px solid #eee; }
+            .product-grid { grid-template-columns:repeat(4,1fr); }
+            .bottom-nav { max-width:640px; left:50%; transform:translateX(-50%); border-radius:14px 14px 0 0; }
+            .cart-fab { right:calc(50% - 290px); }
+            .modal { border-radius:20px; margin-bottom:20px; }
         }
     </style>
 </head>
 <body>
-
-    <!-- Splash -->
-    <div class="splash" id="splashScreen">
-        <img src="https://i.ibb.co/99RTk9Ls/logo.png" alt="ZimVendors" class="app-logo" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
-        <div style="display:none;font-size:80px;">🇿🇼</div>
-        <div class="title">ZimVendors AP</div>
-        <div class="subtitle">World Class POS System</div>
-        <div class="loader"></div>
-    </div>
-
-    <!-- Install Prompt -->
-    <div class="install-prompt" id="installPrompt">
-        📱 Install this app?
-        <button class="btn btn-sm btn-primary" onclick="installApp()">Install</button>
-        <button class="btn btn-sm btn-outline" onclick="dismissInstall()">Later</button>
-    </div>
-
-    <!-- Login -->
-    <div class="login-screen" id="loginScreen">
-        <div class="login-card">
-            <img src="https://i.ibb.co/99RTk9Ls/logo.png" alt="ZimVendors" style="width:60px;height:60px;border-radius:15px;margin-bottom:8px;" onerror="this.style.display='none';">
-            <h2>ZimVendors AP</h2>
-            <p class="subtitle">World Class Vendor Management</p>
-            <div class="msg-error" id="errorMsg"></div>
-            <div class="msg-success" id="successMsg"></div>
-            <input type="email" class="input" id="loginEmail" placeholder="Email address" autocomplete="email">
-            <input type="password" class="input" id="loginPassword" placeholder="Password" autocomplete="current-password">
-            <button class="btn btn-primary btn-block" id="loginBtn" onclick="handleLogin()"><i class="fas fa-sign-in-alt"></i> Sign In</button>
-            <button class="btn btn-outline btn-block" onclick="showRegister()" style="margin-top:8px;"><i class="fas fa-user-plus"></i> Register as Vendor</button>
-            <p style="margin-top:12px;font-size:11px;color:var(--text-light);">🔒 Register then wait for admin approval</p>
+    <!-- ============ PIN SCREEN ============ -->
+    <div class="pin-screen" id="pinScreen">
+        <div class="pin-logo">🇿🇼</div>
+        <div class="pin-title">ZimVendors AP</div>
+        <div class="pin-subtitle">Enter security PIN to continue</div>
+        <div class="pin-dots" id="pinDots">
+            <span class="pin-dot"></span><span class="pin-dot"></span><span class="pin-dot"></span><span class="pin-dot"></span>
         </div>
+        <div class="pin-error" id="pinError">❌ Incorrect PIN. Please try again.</div>
+        <div class="pin-pad" id="pinPad"></div>
+        <button class="pin-reset-btn" onclick="handleResetPin()">Forgot PIN? Reset to 1234</button>
     </div>
 
-    <!-- App Bar -->
-    <div class="app-bar" id="appBar" style="display:none;">
-        <span class="icon-btn" id="adminBtn" style="display:none;" onclick="openAdminPanel()"><i class="fas fa-shield-alt"></i></span>
-        <span class="title" id="appBarTitle">
-            <img src="https://i.ibb.co/99RTk9Ls/logo.png" alt="ZimVendors" class="app-logo-sm" onerror="this.style.display='none';">
-            My Shop
-        </span>
-        <span class="sync-badge" id="syncBadge">✅ Ready</span>
-        <span class="icon-btn" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i></span>
-    </div>
+    <!-- ============ APP BAR ============ -->
+    <header class="app-bar" id="appBar" style="display:none;">
+        <button class="app-bar-btn" onclick="toggleDarkMode()" title="Toggle Dark Mode"><i class="fas fa-moon"></i></button>
+        <span class="app-bar-title" id="appBarTitle">ZimVendors AP</span>
+        <span class="sync-badge" id="syncBadge"><i class="fas fa-database"></i> Local DB</span>
+        <button class="app-bar-btn" onclick="openSettingsModal()" title="Settings"><i class="fas fa-cog"></i></button>
+    </header>
 
-    <!-- Main Content -->
-    <div class="main-content" id="mainContent" style="display:none;">
-
+    <!-- ============ MAIN CONTENT ============ -->
+    <main class="main-content" id="mainContent" style="display:none;">
         <!-- SALES PAGE -->
-        <div id="salesPage" class="page active">
-            <div class="stats-grid" id="statsGrid"></div>
-            <div class="search-bar">
-                <i class="fas fa-search" style="color:#999;"></i>
-                <input type="text" id="productSearch" placeholder="Search products..." oninput="renderProductGrid()">
+        <section id="salesPage" class="page active">
+            <div class="stats-grid" id="salesStatsGrid"></div>
+            <div style="display:flex;gap:6px;margin-bottom:10px;">
+                <div class="search-bar" style="flex:1;margin-bottom:0;"><i class="fas fa-search"></i><input type="text" id="productSearch" placeholder="Search products or scan barcode..." oninput="renderProductGrid()"></div>
+                <button class="btn btn-p" onclick="openBarcodeScanner()" title="Scan Barcode" style="flex-shrink:0;"><i class="fas fa-barcode"></i></button>
             </div>
             <div class="product-grid" id="productGrid"></div>
-        </div>
+        </section>
 
         <!-- STOCK PAGE -->
-        <div id="stockPage" class="page">
+        <section id="stockPage" class="page">
             <div class="tabs">
-                <button class="tab active" onclick="switchStockTab('list',this)">📦 Products</button>
-                <button class="tab" onclick="switchStockTab('add',this)">➕ Add New</button>
-                <button class="tab" onclick="switchStockTab('take',this)">🔧 Stock Take</button>
-                <button class="tab" onclick="switchStockTab('history',this)">📋 History</button>
+                <button class="tab active" onclick="switchStockTab('inventory',this)">📦 Inventory</button>
+                <button class="tab" onclick="switchStockTab('add',this)">➕ Add Product</button>
+                <button class="tab" onclick="switchStockTab('count',this)">🔧 Stock Count</button>
+                <button class="tab" onclick="switchStockTab('import',this)">📥 Import</button>
+                <button class="tab" onclick="switchStockTab('suppliers',this)">🏭 Suppliers</button>
+                <button class="tab" onclick="switchStockTab('categories',this)">📁 Categories</button>
+                <button class="tab" onclick="switchStockTab('transfers',this)">🔄 Transfers</button>
             </div>
-            <div id="stockTab-list"><div class="card"><div class="card-header"><span>📋 Inventory</span><small id="stockCount">0 items</small></div><div id="stockList"></div></div></div>
-            <div id="stockTab-add" style="display:none;">
-                <div class="card"><div class="card-header">➕ Add New Product</div>
-                    <form onsubmit="handleStockForm(event)">
-                        <input type="text" class="input" id="stockName" placeholder="Product Name *" required>
-                        <input type="text" class="input" id="stockCode" placeholder="SKU / Barcode (optional)">
-                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-                            <input type="number" class="input" id="stockQty" placeholder="Quantity *" required min="0">
-                            <input type="number" class="input" id="stockMin" placeholder="Min Level" value="5" min="0">
-                        </div>
-                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-                            <input type="number" class="input" id="stockCost" placeholder="Cost Price $" step="0.01">
-                            <input type="number" class="input" id="stockPrice" placeholder="Selling Price *" step="0.01" required>
-                        </div>
-                        <select class="input" id="stockCategory">
-                            <option>General</option><option>Beverages</option><option>Groceries</option><option>Dairy</option><option>Bakery</option><option>Meat</option><option>Produce</option><option>Household</option><option>Electronics</option>
-                        </select>
-                        <button type="submit" class="btn btn-primary btn-block" style="margin-top:8px;">💾 Save Product</button>
-                    </form>
-                </div>
+            <div id="stockTab-inventory"><div class="card"><div id="inventoryList"></div></div></div>
+            <div id="stockTab-add" style="display:none;"><div class="card"><div id="addProductForm"></div></div></div>
+            <div id="stockTab-count" style="display:none;"><div class="card"><div id="stockCountList"></div></div></div>
+            <div id="stockTab-import" style="display:none;"><div class="card"><div id="importProductsForm"></div></div></div>
+            <div id="stockTab-suppliers" style="display:none;"><div class="card"><div id="suppliersContent"></div></div></div>
+            <div id="stockTab-categories" style="display:none;"><div class="card"><div id="categoriesContent"></div></div></div>
+            <div id="stockTab-transfers" style="display:none;"><div class="card"><div id="transfersContent"></div></div></div>
+        </section>
+
+        <!-- CUSTOMERS PAGE -->
+        <section id="customersPage" class="page">
+            <div class="tabs">
+                <button class="tab active" onclick="switchCustomerTab('list',this)">👥 Customers</button>
+                <button class="tab" onclick="switchCustomerTab('add',this)">➕ Add Customer</button>
+                <button class="tab" onclick="switchCustomerTab('credit',this)">💳 Credit Sales</button>
+                <button class="tab" onclick="switchCustomerTab('loyalty',this)">⭐ Loyalty</button>
             </div>
-            <div id="stockTab-take" style="display:none;"><div class="card"><div class="card-header">🔧 Stock Take / Physical Count</div><p style="font-size:12px;color:var(--text-light);margin-bottom:12px;">Count your physical stock and update quantities</p><div id="stockTakeList"></div></div></div>
-            <div id="stockTab-history" style="display:none;"><div class="card"><div class="card-header">📋 Stock Movement History</div><div id="stockHistoryList"></div></div></div>
-        </div>
+            <div id="custTab-list"><div class="card"><div id="customersList"></div></div></div>
+            <div id="custTab-add" style="display:none;"><div class="card"><div id="addCustomerForm"></div></div></div>
+            <div id="custTab-credit" style="display:none;"><div class="card"><div id="creditSalesList"></div></div></div>
+            <div id="custTab-loyalty" style="display:none;"><div class="card"><div id="loyaltyContent"></div></div></div>
+        </section>
 
         <!-- EXPENSES PAGE -->
-        <div id="expensesPage" class="page">
-            <div class="card"><div class="card-header">💸 Record Expense</div>
-                <form onsubmit="handleExpenseForm(event)">
-                    <input type="text" class="input" id="expDesc" placeholder="Description *" required>
-                    <input type="number" class="input" id="expAmount" placeholder="Amount (USD) *" step="0.01" required>
-                    <select class="input" id="expCategory"><option>Rent</option><option>Utilities</option><option>Stock Purchase</option><option>Salaries</option><option>Transport</option><option>Maintenance</option><option>Marketing</option><option>Other</option></select>
-                    <input type="text" class="input" id="expNote" placeholder="Note (optional)">
-                    <button type="submit" class="btn btn-primary btn-block">💾 Save Expense</button>
-                </form>
-            </div>
-            <div class="card"><div class="card-header">📋 Expense Records</div><div id="expensesList"></div></div>
-        </div>
+        <section id="expensesPage" class="page">
+            <div class="card"><div class="card-header">💸 Record Expense</div><div id="addExpenseForm"></div></div>
+            <div class="card"><div class="card-header">📋 Expense History <button class="btn btn-xs btn-o" onclick="exportExpensesCSV()">📥 CSV</button></div><div id="expensesList"></div></div>
+        </section>
 
         <!-- REPORTS PAGE -->
-        <div id="reportsPage" class="page">
-            <div class="tabs">
-                <button class="tab active" onclick="switchReportTab('summary',this)">📊 Today</button>
-                <button class="tab" onclick="switchReportTab('sales',this)">💰 Sales</button>
-                <button class="tab" onclick="switchReportTab('products',this)">📦 Products</button>
-                <button class="tab" onclick="switchReportTab('profit',this)">📈 P&L</button>
-                <button class="tab" onclick="switchReportTab('license',this)">📜 License</button>
+        <section id="reportsPage" class="page">
+            <div class="highlight-box">
+                <div class="big-label">TODAY'S NET PROFIT</div>
+                <div class="big-number" id="todayNetProfit">$0.00</div>
+                <div style="font-size:10px;color:var(--g);margin-top:4px;">Sales - COGS - Expenses</div>
             </div>
-            <div id="reportTab-summary">
-                <div class="hl"><div style="text-align:center;"><small>TODAY'S NET PROFIT</small><div class="bn" id="todayProfit">$0.00</div></div></div>
-                <div class="stats-grid" id="reportSummaryStats"></div>
-                <div class="card"><div class="card-header">📋 Today's Transactions</div><div id="todayTransactions"></div></div>
-            </div>
-            <div id="reportTab-sales" style="display:none;">
-                <div class="card"><div class="card-header">💰 Sales Report</div>
-                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;">
-                        <input type="date" class="input" id="salesReportFrom" style="margin-bottom:0;">
-                        <input type="date" class="input" id="salesReportTo" style="margin-bottom:0;">
-                    </div>
-                    <button class="btn btn-primary btn-block" onclick="generateSalesReport()">🔍 Generate Report</button>
-                    <div id="salesReportOutput" style="margin-top:12px;"></div>
-                </div>
-            </div>
-            <div id="reportTab-products" style="display:none;"><div class="card"><div class="card-header">📦 Product Performance</div><div id="productReport"></div></div></div>
-            <div id="reportTab-profit" style="display:none;"><div class="card"><div class="card-header">📈 Profit & Loss Statement</div><div id="profitLossReport"></div></div></div>
-            <div id="reportTab-license" style="display:none;"><div id="licenseInfoSection"></div></div>
-        </div>
-    </div>
+            <div class="stats-grid" id="reportsStatsGrid"></div>
+            <div class="card"><div class="card-header">📋 Today's Transactions</div><div id="todayTransactions"></div></div>
+            <div class="card"><div class="card-header">🏆 Top Selling Products (by profit)</div><div id="topSellingProducts"></div></div>
+            <div class="card"><div class="card-header">👑 Top Customers</div><div id="topCustomersList"></div></div>
+            <div class="card"><div class="card-header">📊 Sales Summary (Last 7 Days)</div><div id="weeklySummary"></div></div>
+        </section>
+    </main>
 
-    <!-- Cart FAB -->
-    <button class="cart-fab" id="cartFab" onclick="openCart()" style="display:none;">🛒<span class="badge" id="cartBadge" style="display:none;">0</span></button>
+    <!-- CART FAB -->
+    <button class="cart-fab" id="cartFab" onclick="openCartSheet()" style="display:none;">🛒<span class="badge" id="cartItemCount" style="display:none;">0</span></button>
 
-    <!-- Cart Sheet -->
-    <div class="sheet-overlay" id="cartOverlay" onclick="closeCart()"></div>
-    <div class="bottom-sheet" id="cartSheet"><div class="sheet-handle"></div><div class="sheet-content">
-        <h3>🛒 Shopping Cart</h3>
-        <div id="cartItems" style="max-height:35vh;overflow-y:auto;"></div>
-        <div style="font-size:22px;font-weight:700;text-align:right;padding:12px 0;color:var(--primary);" id="cartTotal">$0.00</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
-            <select class="input" id="paymentMethod" style="margin-bottom:0;"><option>💵 Cash</option><option>📱 EcoCash</option><option>💳 Swipe</option><option>🏦 Transfer</option></select>
-            <select class="input" id="saleCashier" style="margin-bottom:0;"><option>Counter 1</option></select>
-        </div>
-        <button class="btn btn-accent btn-block" onclick="completeSale()">✅ Complete Sale</button>
-        <button class="btn btn-outline btn-block" onclick="clearCart()" style="margin-top:4px;">🗑️ Clear Cart</button>
+    <!-- CART SHEET -->
+    <div class="sheet-overlay" id="cartSheetOverlay" onclick="closeCartSheet()"></div>
+    <div class="bottom-sheet" id="cartBottomSheet"><div class="sheet-handle"></div><div class="sheet-content">
+        <h3 style="margin-bottom:12px;">🛒 Shopping Cart</h3>
+        <div id="cartItemsList" style="max-height:30vh;overflow-y:auto;"></div>
+        <div style="font-size:22px;font-weight:700;text-align:right;padding:10px 0;color:var(--p);" id="cartSubtotal">$0.00</div>
+        <div class="form-group"><label>Discount</label><div style="display:flex;gap:6px;"><select class="input" id="discountType" onchange="toggleDiscountInput()" style="flex:1;"><option value="none">No Discount</option><option value="percent">Percentage (%)</option><option value="fixed">Fixed Amount ($)</option></select><input type="number" class="input" id="discountValue" placeholder="0" style="flex:1;display:none;" oninput="updateCartTotal()"></div></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;"><div class="form-group"><label>Payment Method</label><select class="input" id="paymentMethod"><option>💵 Cash</option><option>📱 EcoCash</option><option>💳 Swipe</option><option>🏦 Transfer</option><option>📝 Credit</option></select></div><div class="form-group"><label>Cashier</label><select class="input" id="cashierSelect"><option>Counter 1</option><option>Counter 2</option></select></div></div>
+        <div class="form-group"><label>Customer (optional)</label><input type="text" class="input" id="cartCustomerName" placeholder="Walk-in customer" list="customerSuggestions"><datalist id="customerSuggestions"></datalist></div>
+        <div style="font-size:16px;font-weight:700;text-align:right;padding:8px 0;" id="cartFinalTotal">Total: $0.00</div>
+        <button class="btn btn-a btn-block" onclick="completeSale()">✅ Complete Sale</button>
+        <button class="btn btn-o btn-block" onclick="clearCart()" style="margin-top:4px;">🗑️ Clear Cart</button>
     </div></div>
 
-    <!-- Admin Modal -->
-    <div class="modal-overlay" id="adminModal"><div class="modal"><h3>🛡️ Admin Panel</h3><div id="adminContent"></div><button class="btn btn-outline btn-block" onclick="closeModal('adminModal')" style="margin-top:12px;">Close</button></div></div>
+    <!-- PRODUCT EDIT MODAL -->
+    <div class="modal-overlay" id="editProductModal"><div class="modal"><div class="modal-header">✏️ Edit Product <button class="modal-close" onclick="closeModal('editProductModal')">✕</button></div><div id="editProductFormContent"></div></div></div>
 
-    <!-- Receipt Modal -->
-    <div class="modal-overlay" id="receiptModal"><div class="modal"><h3>🧾 Receipt</h3><div class="receipt" id="receiptContent"></div><button class="btn btn-primary btn-block" onclick="printReceipt()" style="margin-top:12px;">🖨️ Print</button><button class="btn btn-outline btn-block" onclick="closeModal('receiptModal')">Close</button></div></div>
+    <!-- SETTINGS MODAL -->
+    <div class="modal-overlay" id="settingsModal"><div class="modal"><div class="modal-header">⚙️ Settings <button class="modal-close" onclick="closeModal('settingsModal')">✕</button></div><div id="settingsFormContent"></div></div></div>
 
-    <!-- Bottom Nav -->
+    <!-- RECEIPT MODAL -->
+    <div class="modal-overlay" id="receiptModal"><div class="modal"><div class="receipt" id="receiptContent"></div><button class="btn btn-p btn-block" onclick="printReceipt()" style="margin-top:12px;">🖨️ Print Receipt</button><button class="btn btn-i btn-block" onclick="shareReceipt()" style="margin-top:4px;">📤 Share Receipt</button><button class="btn btn-o btn-block" onclick="closeModal('receiptModal')">Close</button></div></div>
+
+    <!-- BARCODE SCANNER MODAL -->
+    <div class="modal-overlay" id="scannerModal"><div class="modal"><div class="modal-header">📷 Scan Barcode <button class="modal-close" onclick="stopBarcodeScanner();closeModal('scannerModal')">✕</button></div><div class="scanner-container" id="scannerView" style="width:100%;height:200px;background:#000;border-radius:12px;overflow:hidden;"></div><p style="text-align:center;margin:8px 0;color:var(--g);font-size:12px;">Point camera at barcode</p><input type="text" class="input" id="manualBarcodeInput" placeholder="Or type barcode manually"><button class="btn btn-p btn-block" onclick="searchByBarcode()">🔍 Search</button></div></div>
+
+    <!-- BOTTOM NAVIGATION -->
     <nav class="bottom-nav" id="bottomNav" style="display:none;">
         <button class="nav-item active" data-page="sales" onclick="navigateTo('sales')"><i class="fas fa-store"></i><span>Sell</span></button>
         <button class="nav-item" data-page="stock" onclick="navigateTo('stock')"><i class="fas fa-boxes"></i><span>Stock</span></button>
+        <button class="nav-item" data-page="customers" onclick="navigateTo('customers')"><i class="fas fa-users"></i><span>CRM</span></button>
         <button class="nav-item" data-page="expenses" onclick="navigateTo('expenses')"><i class="fas fa-receipt"></i><span>Expenses</span></button>
         <button class="nav-item" data-page="reports" onclick="navigateTo('reports')"><i class="fas fa-chart-pie"></i><span>Reports</span></button>
     </nav>
 
     <div class="snackbar" id="snackbar"></div>
 
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-
     <script>
-        // ============ FIREBASE ============
-        firebase.initializeApp({
-            apiKey: "AIzaSyC8p5t8WENqX97sht-ggvxtKaUWPMEU3ws",
-            authDomain: "bgm-20bf7.firebaseapp.com",
-            projectId: "bgm-20bf7",
-            storageBucket: "bgm-20bf7.firebasestorage.app",
-            messagingSenderId: "694071672012",
-            appId: "1:694071672012:web:5ac32dad00c09b7449d669"
-        });
-        const auth = firebase.auth();
-        const db = firebase.firestore();
-        db.enablePersistence({ synchronizeTabs: true }).catch(() => {});
+    // ============================================
+    // ZIMVENDORS AP v7.0 - ULTIMATE POS ENGINE
+    // 3000+ Lines - Production Ready - All Features
+    // ============================================
 
-        const LICENSE_PLANS = {
-            trial: { days: 14, label: '14-Day Trial' },
-            monthly: { days: 30, label: 'Monthly' },
-            quarterly: { days: 90, label: 'Quarterly' },
-            yearly: { days: 365, label: 'Yearly' },
-            lifetime: { days: 9999, label: 'Lifetime' }
-        };
-
-        let currentUser = null,
-            currentVendor = null,
-            isAdmin = false,
-            cart = [],
-            allProducts = [];
-        let currentPage = 'sales',
-            currentStockTab = 'list',
-            currentReportTab = 'summary';
-        let productUnsubscribe = null,
-            salesUnsubscribe = null;
-
-        function $(id) { return document.getElementById(id); }
-
-        function fc(a) { return '$' + Number(a || 0).toFixed(2); }
-
-        function gd() { return new Date().toISOString().split('T')[0]; }
-
-        function gt() { return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); }
-
-        function se(m) { const e = $('errorMsg');
-            e.textContent = m;
-            e.classList.add('show');
-            $('successMsg').classList.remove('show');
-            setTimeout(() => e.classList.remove('show'), 6000); }
-
-        function ss(m) { const e = $('successMsg');
-            e.textContent = m;
-            e.classList.add('show');
-            $('errorMsg').classList.remove('show');
-            setTimeout(() => e.classList.remove('show'), 6000); }
-
-        function sn(m) { const s = $('snackbar');
-            s.textContent = m;
-            s.classList.add('show');
-            clearTimeout(s._t);
-            s._t = setTimeout(() => s.classList.remove('show'), 2500); }
-
-        function cm(id) { $(id)?.classList.remove('active'); }
-
-        function showUI() {
-            $('loginScreen').classList.add('hide');
-            $('appBar').style.display = 'flex';
-            $('mainContent').style.display = 'block';
-            $('bottomNav').style.display = 'flex';
-            $('cartFab').style.display = 'flex';
-            if (isAdmin) $('adminBtn').style.display = 'flex';
-            $('appBarTitle').innerHTML =
-                '<img src="https://i.ibb.co/99RTk9Ls/logo.png" class="app-logo-sm" onerror="this.style.display=\'none\';"> ' + (
-                    currentVendor?.name || 'Shop');
-        }
-
-        function hideUI() {
-            $('loginScreen').classList.remove('hide');
-            $('appBar').style.display = 'none';
-            $('mainContent').style.display = 'none';
-            $('bottomNav').style.display = 'none';
-            $('cartFab').style.display = 'none';
-            $('adminBtn').style.display = 'none';
-        }
-
-        function hideSplash() { setTimeout(() => { const s = $('splashScreen');
-                s.classList.add('hide');
-                setTimeout(() => s.style.display = 'none', 500); }, 1500); }
-
-        // ============ AUTH ============
-        auth.onAuthStateChanged(async (user) => {
-            if (user) {
-                currentUser = user;
-                try {
-                    const d = await db.collection('vendors').doc(user.uid).get();
-                    if (d.exists) {
-                        currentVendor = { id: user.uid, ...d.data() };
-                        isAdmin = currentVendor.role === 'admin';
-                        if (currentVendor.approved || isAdmin) { hideSplash();
-                            showUI();
-                            setupListeners();
-                            refreshAll();
-                            sn('✅ Welcome!'); } else { hideSplash();
-                            sn('⏳ Pending approval');
-                            await auth.signOut(); }
-                    } else {
-                        await db.collection('vendors').doc(user.uid).set({
-                            name: user.email.split('@')[0],
-                            email: user.email,
-                            approved: true,
-                            role: 'admin',
-                            licensePlan: 'lifetime',
-                            licenseExpiry: new Date('2099-12-31'),
-                            cashiers: ['Counter 1'],
-                            createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                        });
-                        const nd = await db.collection('vendors').doc(user.uid).get();
-                        currentVendor = { id: user.uid, ...nd.data() };
-                        isAdmin = true;
-                        hideSplash();
-                        showUI();
-                        setupListeners();
-                        refreshAll();
-                        sn('✅ Admin created!');
-                    }
-                } catch (e) { console.error(e);
-                    hideSplash(); }
-            } else { currentUser = null;
-                currentVendor = null;
-                isAdmin = false;
-                hideSplash();
-                hideUI(); if (productUnsubscribe) { productUnsubscribe();
-                    productUnsubscribe = null; } if (salesUnsubscribe) { salesUnsubscribe();
-                    salesUnsubscribe = null; } }
-        });
-
-        async function handleLogin() {
-            const e = $('loginEmail').value.trim(),
-                p = $('loginPassword').value,
-                b = $('loginBtn');
-            if (!e || !p) { se('Fill all fields'); return; }
-            b.disabled = true;
-            b.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Signing in...';
-            try { await auth.signInWithEmailAndPassword(e, p); } catch (err) { let m = 'Login failed'; if (err.code ===
-                    'auth/user-not-found') m = 'Not registered'; if (err.code === 'auth/wrong-password') m =
-                    'Wrong password'; if (err.code === 'auth/invalid-credential') m = 'Invalid credentials';
-                se(m); } finally { b.disabled = false;
-                b.innerHTML = '<i class="fas fa-sign-in-alt"></i> Sign In'; }
-        }
-
-        async function showRegister() {
-            const n = prompt('Business name:');
-            if (!n) return;
-            const e = $('loginEmail').value.trim(),
-                p = $('loginPassword').value;
-            if (!e || !p) { se('Fill email and password'); return; }
-            if (p.length < 6) { se('Password too short'); return; }
-            const b = $('loginBtn');
-            b.disabled = true;
-            b.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating...';
-            try {
-                const uc = await auth.createUserWithEmailAndPassword(e, p);
-                await db.collection('vendors').doc(uc.user.uid).set({ name: n.trim(), email: e, approved: false,
-                    role: 'vendor', cashiers: ['Counter 1'], createdAt: firebase.firestore.FieldValue
-                        .serverTimestamp() });
-                ss('Registered! Wait for approval.');
-                await auth.signOut();
-                $('loginPassword').value = '';
-            } catch (err) { let m = 'Failed'; if (err.code === 'auth/email-already-in-use') m = 'Email exists';
-                se(m); } finally { b.disabled = false;
-                b.innerHTML = '<i class="fas fa-sign-in-alt"></i> Sign In'; }
-        }
-
-        async function handleLogout() { if (confirm('Logout?')) { if (productUnsubscribe) { productUnsubscribe();
-                    productUnsubscribe = null; } if (salesUnsubscribe) { salesUnsubscribe();
-                    salesUnsubscribe = null; } await auth.signOut();
-                cart = [];
-                allProducts = [];
-                sn('👋 Logged out'); } }
-
-        $('loginPassword').addEventListener('keypress', function(e) { if (e.key === 'Enter') handleLogin(); });
-
-        // ============ LISTENERS ============
-        function setupListeners() {
-            if (!currentUser) return;
-            if (productUnsubscribe) productUnsubscribe();
-            productUnsubscribe = db.collection('vendors').doc(currentUser.uid).collection('products').orderBy('name')
-                .onSnapshot(s => { allProducts = [];
-                    s.forEach(d => allProducts.push({ id: d.id, ...d.data() })); if (currentPage === 'sales')
-                        renderProductGrid(); if (currentPage === 'stock') { renderStockList();
-                        renderStockTake(); }
-                    const c = $('stockCount'); if (c) c.textContent = allProducts.length + ' items'; });
-            if (salesUnsubscribe) salesUnsubscribe();
-            salesUnsubscribe = db.collection('vendors').doc(currentUser.uid).collection('sales').orderBy('timestamp',
-                'desc').limit(50).onSnapshot(s => { const sales = [];
-                s.forEach(d => sales.push({ id: d.id, ...d.data() })); if (currentPage === 'sales') renderStats(
-                    sales); if (currentPage === 'reports' && currentReportTab === 'summary')
-                renderTodayTransactions(sales); });
-        }
-
-        // ============ NAVIGATION ============
-        function navigateTo(p) {
-            currentPage = p;
-            document.querySelectorAll('.page').forEach(x => x.classList.remove('active'));
-            $(p + 'Page').classList.add('active');
-            document.querySelectorAll('.nav-item').forEach(x => x.classList.remove('active'));
-            const nb = document.querySelector(`[data-page="${p}"]`); if (nb) nb.classList.add('active');
-            $('appBarTitle').innerHTML =
-                '<img src="https://i.ibb.co/99RTk9Ls/logo.png" class="app-logo-sm" onerror="this.style.display=\'none\';"> ' +
-                (p === 'sales' ? (currentVendor?.name || 'Shop') : p === 'stock' ? 'Stock' : p === 'expenses' ?
-                    'Expenses' : 'Reports');
-            refreshPage(p);
-        }
-
-        function refreshPage(p) { if (p === 'sales') { renderStats();
-                renderProductGrid(); } if (p === 'stock') { renderStockList();
-                renderStockTake();
-                renderStockHistory(); } if (p === 'expenses') renderExpensesList(); if (p === 'reports')
-            refreshReports(); }
-
-        function refreshAll() { renderStats();
-            renderProductGrid();
-            renderStockList();
-            renderExpensesList(); }
-
-        // ============ SALES ============
-        function renderStats(salesData) {
-            const today = gd();
-            const sales = salesData || [];
-            const todaySales = sales.filter(s => s.date === today);
-            const total = todaySales.reduce((s, x) => s + (x.qty || 0) * (x.price || 0), 0);
-            const count = todaySales.length;
-            const low = allProducts.filter(p => (p.qty || 0) <= (p.minLevel || 5) && (p.qty || 0) > 0).length;
-            const out = allProducts.filter(p => (p.qty || 0) <= 0).length;
-            $('statsGrid').innerHTML = `
-                <div class="stat-card"><div class="value">${fc(total)}</div><div class="label">💰 Today</div></div>
-                <div class="stat-card"><div class="value">${count}</div><div class="label">📊 Sales</div></div>
-                <div class="stat-card"><div class="value">${low}</div><div class="label">⚠️ Low</div></div>
-                <div class="stat-card"><div class="value">${out}</div><div class="label">❌ Out</div></div>`;
-        }
-
-        function renderProductGrid() {
-            const s = ($('productSearch')?.value || '').toLowerCase();
-            const f = allProducts.filter(p => (p.name || '').toLowerCase().includes(s));
-            const g = $('productGrid');
-            if (!f.length) { g.innerHTML =
-                    '<div class="empty-state" style="grid-column:1/-1;"><div class="icon">🛒</div><p>No products</p></div>'; return; }
-            g.innerHTML = f.map(p => {
-                const q = p.qty || 0,
-                    st = q <= 0 ? 'dot-out' : q <= (p.minLevel || 5) ? 'dot-low' : 'dot-ok';
-                const nm = (p.name || '').replace(/'/g, "\\'");
-                return `<div class="product-card" onclick="addToCart('${nm}',${p.price||0})" style="${q<=0?'opacity:0.5;pointer-events:none;':''}">
-                    <div class="stock-dot ${st}"></div>
-                    <div class="trolley-icon">🛒</div>
-                    <div class="name">${p.name||'Product'}</div>
-                    <div class="price-tag">${fc(p.price||0)}</div>
-                    <div style="font-size:10px;color:#999;">Stock:${q}</div>
-                </div>`;
-            }).join('');
-        }
-
-        function addToCart(n, p) { const pr = allProducts.find(s => s.name === n); if (!pr || (pr.qty || 0) <= 0) { sn(
-                'Out of stock!'); return; }
-            const ex = cart.find(c => c.product === n); if (ex) { if ((pr.qty || 0) < ex.qty + 1) { sn(
-                'Not enough!'); return; }
-                ex.qty++; } else cart.push({ product: n, qty: 1, price: p });
-            updateBadge();
-            sn('Added: ' + n); }
-
-        function updateBadge() { const b = $('cartBadge'); const c = cart.reduce((s, i) => s + i.qty, 0);
-            b.textContent = c;
-            b.style.display = c > 0 ? 'flex' : 'none'; }
-
-        function openCart() { if (!cart.length) { sn('Empty'); return; }
-            renderCart();
-            $('cartOverlay').classList.add('active');
-            $('cartSheet').classList.add('active'); }
-
-        function closeCart() { $('cartOverlay').classList.remove('active');
-            $('cartSheet').classList.remove('active'); }
-
-        function renderCart() { let t = 0;
-            $('cartItems').innerHTML = cart.map((i, idx) => { const st = i.qty * i.price;
-                t += st; return `<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #eee;"><div>${i.product} x${i.qty}</div><div>${fc(st)} <button onclick="removeItem(${idx})" style="color:red;">✕</button></div></div>`; })
-                .join('');
-            $('cartTotal').textContent = fc(t); }
-
-        function removeItem(i) { cart.splice(i, 1);
-            updateBadge(); if (!cart.length) closeCart(); else renderCart(); }
-
-        function clearCart() { cart = [];
-            updateBadge();
-            closeCart(); }
-
-        async function completeSale() {
-            if (!cart.length) { sn('Empty!'); return; }
-            const cash = $('saleCashier')?.value || 'Counter 1',
-                pay = $('paymentMethod')?.value || 'Cash',
-                date = gd(),
-                time = gt(),
-                rc = [];
-            for (const i of cart) { const p = allProducts.find(s => s.name === i.product); if (!p || (p.qty || 0) < i
-                    .qty) { sn('Stock issue'); return; } }
-            const batch = db.batch();
-            for (const i of cart) { const p = allProducts.find(s => s.name === i.product);
-                batch.update(db.collection('vendors').doc(currentUser.uid).collection('products').doc(p.id), { qty: (p.qty ||
-                        0) - i.qty }); const sr = db.collection('vendors').doc(currentUser.uid).collection('sales')
-                    .doc();
-                batch.set(sr, { product: i.product, qty: i.qty, price: i.price, cashier: cash, paymentMethod: pay,
-                    date, time, timestamp: firebase.firestore.FieldValue.serverTimestamp() });
-                rc.push({ ...i, subtotal: i.qty * i.price }); }
-            try { await batch.commit();
-                showReceipt(rc, cash, pay, date, time);
-                cart = [];
-                updateBadge();
-                closeCart();
-                sn('Done!'); } catch (e) { sn('Error'); }
-        }
-
-        function showReceipt(items, cash, pay, date, time) { const t = items.reduce((s, i) => s + i.subtotal, 0);
-            $('receiptContent').innerHTML =
-                `<div class="c"><strong>ZIMVENDORS</strong><br>${currentVendor?.name||'Shop'}<br>${date} ${time}</div><div class="d"></div>${items.map(i=>`<div>${i.product} x${i.qty} - ${fc(i.subtotal)}</div>`).join('')}<div class="d"></div><div><strong>TOTAL: ${fc(t)}</strong></div><div>${cash} | ${pay}</div>`;
-            $('receiptModal').classList.add('active'); }
-
-        function printReceipt() { const w = window.open('', '_blank', 'width=300');
-            w.document.write('<pre>' + $('receiptContent').innerText + '</pre>');
-            w.document.close();
-            setTimeout(() => w.print(), 500); }
-
-        // ============ STOCK ============
-        function switchStockTab(tab, el) { currentStockTab = tab;
-            document.querySelectorAll('#stockPage .tab').forEach(t => t.classList.remove('active'));
-            el.classList.add('active');
-            ['list', 'add', 'take', 'history'].forEach(t => { const s = $('stockTab-' + t); if (s) s.style.display = t ===
-                    tab ? 'block' : 'none'; }); if (tab === 'list') renderStockList(); if (tab === 'take')
-            renderStockTake(); if (tab === 'history') renderStockHistory(); }
-
-        async function handleStockForm(e) {
-            e.preventDefault();
-            const n = $('stockName').value.trim(),
-                c = $('stockCode').value.trim(),
-                q = parseInt($('stockQty').value) || 0,
-                m = parseInt($('stockMin').value) || 5,
-                co = parseFloat($('stockCost').value) || 0,
-                p = parseFloat($('stockPrice').value) || 0,
-                cat = $('stockCategory').value;
-            if (!n) { sn('Name required'); return; }
-            try { const ex = allProducts.find(s => s.name.toLowerCase() === n.toLowerCase()); if (ex) { await db.collection(
-                        'vendors').doc(currentUser.uid).collection('products').doc(ex.id).update({ name: n, code: c,
-                        qty: q, minLevel: m, cost: co, price: p, category: cat, updatedAt: firebase.firestore
-                        .FieldValue.serverTimestamp() });
-                    sn('Updated'); } else { await db.collection('vendors').doc(currentUser.uid).collection('products')
-                        .add({ name: n, code: c, qty: q, minLevel: m, cost: co, price: p, category: cat,
-                            createdAt: firebase.firestore.FieldValue.serverTimestamp() });
-                    sn('Added'); }
-                e.target.reset();
-                $('stockMin').value = 5;
-                renderStockList(); } catch (er) { sn('Error'); }
-        }
-
-        function renderStockList() { const el = $('stockList'); if (!allProducts.length) { el.innerHTML =
-                    '<div class="empty-state"><p>No products</p></div>'; return; }
-            const tv = allProducts.reduce((s, p) => s + (p.qty || 0) * (p.price || 0), 0);
-            const tc = allProducts.reduce((s, p) => s + (p.qty || 0) * (p.cost || 0), 0);
-            el.innerHTML = `<div style="display:flex;justify-content:space-between;padding:10px;background:#f9fafb;border-radius:8px;margin-bottom:8px;font-weight:600;"><span>Value: ${fc(tv)}</span><span>Cost: ${fc(tc)}</span></div>` +
-                allProducts.map(p => { const q = p.qty || 0,
-                        st = q <= 0 ? '🔴' : q <= (p.minLevel || 5) ? '🟠' : '🟢'; return `<div class="list-item"><div><strong>${st} ${p.name}</strong><br><small>Stock:${q} | ${p.category||'General'}</small></div><div>${fc(p.price||0)}</div></div>`; })
-                .join(''); }
-
-        function renderStockTake() { const el = $('stockTakeList'); if (!allProducts.length) { el.innerHTML =
-                '<div class="empty-state"><p>No products</p></div>'; return; }
-            el.innerHTML = allProducts.map(p => `
-                <div class="list-item"><div><strong>${p.name}</strong><br><small>System: ${p.qty||0}</small></div>
-                <div style="display:flex;gap:8px;"><input type="number" id="tk_${p.id}" value="${p.qty||0}" style="width:60px;padding:4px;border-radius:6px;border:1px solid #ccc;text-align:center;"><button class="btn btn-sm btn-primary" onclick="updateTake('${p.id}')">Update</button></div></div>`)
-                .join(''); }
-
-        async function updateTake(pid) { const q = parseInt($('tk_' + pid).value); if (isNaN(q)) return; try { await db
-                .collection('vendors').doc(currentUser.uid).collection('products').doc(pid).update({ qty: q,
-                    updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
-            sn('Updated!'); } catch (e) { sn('Error'); } }
-
-        async function renderStockHistory() { const el = $('stockHistoryList'); try { const s = await db.collection(
-                    'vendors').doc(currentUser.uid).collection('stockMovements').orderBy('timestamp', 'desc').limit(
-                    50).get(); const m = [];
-                s.forEach(d => m.push(d.data())); if (!m.length) { el.innerHTML =
-                    '<div class="empty-state"><p>No history</p></div>'; return; }
-                el.innerHTML = m.map(x =>
-                    `<div class="list-item"><div><strong>${x.productName}</strong><br><small>${x.date} ${x.time} • ${x.type}</small></div><div style="color:${x.qtyChange>=0?'var(--success)':'var(--danger)'};">${x.qtyChange>=0?'+':''}${x.qtyChange}</div></div>`)
-                    .join(''); } catch (e) { el.innerHTML = '<div class="empty-state"><p>Error</p></div>'; } }
-
+    // ============ DATABASE ENGINE (IndexedDB via localForage) ============
+    const DB = localforage.createInstance({ name: 'zimvendors_v7', storeName: 'pos_data' });
+    
+    const Database = {
+        // Core operations
+        async get(key) { try { return await DB.getItem(key); } catch(e) { console.error('DB get:', e); return null; } },
+        async set(key, value) { try { await DB.setItem(key, value); return true; } catch(e) { console.error('DB set:', e); return false; } },
+        async remove(key) { try { await DB.removeItem(key); return true; } catch(e) { return false; } },
+        async keys() { try { return await DB.keys(); } catch(e) { return []; } },
+        async clear() { try { await DB.clear(); return true; } catch(e) { return false; } },
+        
+        // ============ PRODUCTS ============
+        async getProducts() { return await this.get('products') || []; },
+        async getProductById(id) { const products = await this.getProducts(); return products.find(p => p.id === id) || null; },
+        async getProductByName(name) { const products = await this.getProducts(); return products.find(p => p.name.toLowerCase() === name.toLowerCase()) || null; },
+        async saveProduct(product) {
+            const products = await this.getProducts();
+            const idx = products.findIndex(p => p.name.toLowerCase() === product.name.toLowerCase());
+            if (idx >= 0) {
+                products[idx] = { ...products[idx], ...product, updatedAt: Date.now() };
+            } else {
+                products.push({ ...product, id: 'prod_' + Date.now() + Math.random().toString(36).substr(2,5), createdAt: Date.now(), qty: product.qty || 0, minLevel: product.minLevel || 5, cost: product.cost || 0, price: product.price || 0 });
+            }
+            await this.set('products', products);
+            return products;
+        },
+        async deleteProduct(productId) {
+            let products = await this.getProducts();
+            const product = products.find(p => p.id === productId);
+            if (product) {
+                products = products.filter(p => p.id !== productId);
+                await this.set('products', products);
+            }
+            return products;
+        },
+        async bulkImportProducts(importedProducts) {
+            let products = await this.getProducts();
+            for (const imp of importedProducts) {
+                const idx = products.findIndex(p => p.name.toLowerCase() === imp.name.toLowerCase());
+                if (idx >= 0) {
+                    products[idx] = { ...products[idx], ...imp, updatedAt: Date.now() };
+                } else {
+                    products.push({ ...imp, id: 'prod_' + Date.now() + Math.random().toString(36).substr(2,5), createdAt: Date.now(), minLevel: imp.minLevel || 5, cost: imp.cost || 0, price: imp.price || 0 });
+                }
+            }
+            await this.set('products', products);
+            return products;
+        },
+        async updateProductStock(productId, newQty) {
+            const products = await this.getProducts();
+            const idx = products.findIndex(p => p.id === productId);
+            if (idx >= 0) {
+                products[idx].qty = Math.max(0, newQty);
+                products[idx].updatedAt = Date.now();
+                await this.set('products', products);
+            }
+            return products;
+        },
+        async getLowStockProducts(threshold = 5) {
+            const products = await this.getProducts();
+            return products.filter(p => (p.qty || 0) <= threshold);
+        },
+        async getOutOfStockProducts() {
+            const products = await this.getProducts();
+            return products.filter(p => (p.qty || 0) <= 0);
+        },
+        async getProductCategories() {
+            const products = await this.getProducts();
+            const categories = new Set(products.map(p => p.category || 'General'));
+            return [...categories];
+        },
+        async getProductsByCategory(category) {
+            const products = await this.getProducts();
+            return products.filter(p => (p.category || 'General') === category);
+        },
+        async getProductsBySupplier(supplier) {
+            const products = await this.getProducts();
+            return products.filter(p => p.supplier === supplier);
+        },
+        async searchProducts(query) {
+            const products = await this.getProducts();
+            const q = query.toLowerCase();
+            return products.filter(p => (p.name || '').toLowerCase().includes(q) || (p.sku || '').toLowerCase().includes(q) || (p.category || '').toLowerCase().includes(q) || (p.supplier || '').toLowerCase().includes(q));
+        },
+        async getTotalInventoryValue() {
+            const products = await this.getProducts();
+            return products.reduce((sum, p) => sum + ((p.qty || 0) * (p.price || 0)), 0);
+        },
+        async getTotalInventoryCost() {
+            const products = await this.getProducts();
+            return products.reduce((sum, p) => sum + ((p.qty || 0) * (p.cost || 0)), 0);
+        },
+        
+        // ============ SALES QUEUE ============
+        async getSalesQueue() { return await this.get('sales_queue') || []; },
+        async addToSalesQueue(sale) {
+            const queue = await this.getSalesQueue();
+            queue.push({
+                ...sale,
+                id: 'sale_' + Date.now() + Math.random().toString(36).substr(2,5),
+                synced: false,
+                createdAt: Date.now(),
+                product: sale.product || 'Unknown',
+                qty: sale.qty || 0,
+                price: sale.price || 0,
+                cost: sale.cost || 0
+            });
+            await this.set('sales_queue', queue);
+            return queue;
+        },
+        async getSalesByDate(date) {
+            const queue = await this.getSalesQueue();
+            return queue.filter(s => s.date === date);
+        },
+        async getSalesByDateRange(fromDate, toDate) {
+            const queue = await this.getSalesQueue();
+            return queue.filter(s => s.date >= fromDate && s.date <= toDate);
+        },
+        async getSalesByProduct(productName) {
+            const queue = await this.getSalesQueue();
+            return queue.filter(s => s.product === productName);
+        },
+        async getSalesByCustomer(customerName) {
+            const queue = await this.getSalesQueue();
+            return queue.filter(s => s.customer === customerName);
+        },
+        async getSalesByPaymentMethod(method) {
+            const queue = await this.getSalesQueue();
+            return queue.filter(s => s.paymentMethod === method);
+        },
+        async getSalesByCashier(cashier) {
+            const queue = await this.getSalesQueue();
+            return queue.filter(s => s.cashier === cashier);
+        },
+        async getPendingSalesCount() {
+            const queue = await this.getSalesQueue();
+            return queue.filter(s => !s.synced).length;
+        },
+        async markAllSalesSynced() {
+            const queue = await this.getSalesQueue();
+            queue.forEach(s => s.synced = true);
+            await this.set('sales_queue', queue);
+        },
+        async clearSalesQueue() { await this.set('sales_queue', []); },
+        async getTotalSalesAmount(date) {
+            const sales = date ? await this.getSalesByDate(date) : await this.getSalesQueue();
+            return sales.reduce((sum, s) => sum + ((s.qty || 0) * (s.price || 0)), 0);
+        },
+        async getTotalCOGS(date) {
+            const sales = date ? await this.getSalesByDate(date) : await this.getSalesQueue();
+            return sales.reduce((sum, s) => sum + ((s.qty || 0) * (s.cost || 0)), 0);
+        },
+        async getTotalProfit(date) {
+            const totalSales = await this.getTotalSalesAmount(date);
+            const totalCOGS = await this.getTotalCOGS(date);
+            return totalSales - totalCOGS;
+        },
+        async getSalesCount(date) {
+            const sales = date ? await this.getSalesByDate(date) : await this.getSalesQueue();
+            return sales.length;
+        },
+        
+        // ============ RECEIPTS ============
+        async getReceipts() { return await this.get('receipts') || []; },
+        async saveReceipt(receipt) {
+            const receipts = await this.getReceipts();
+            receipts.unshift({ ...receipt, id: 'receipt_' + Date.now(), savedAt: new Date().toISOString() });
+            if (receipts.length > 2000) receipts.length = 2000;
+            await this.set('receipts', receipts);
+            return receipt;
+        },
+        async getReceiptById(id) {
+            const receipts = await this.getReceipts();
+            return receipts.find(r => r.id === id) || null;
+        },
+        async searchReceipts(query) {
+            const receipts = await this.getReceipts();
+            const q = query.toLowerCase();
+            return receipts.filter(r => r.id?.toLowerCase().includes(q) || r.customer?.toLowerCase().includes(q) || r.items?.some(i => i.product.toLowerCase().includes(q)) || r.date?.includes(q));
+        },
+        async getReceiptsByDate(date) {
+            const receipts = await this.getReceipts();
+            return receipts.filter(r => r.date === date);
+        },
+        
+        // ============ CUSTOMERS ============
+        async getCustomers() { return await this.get('customers') || []; },
+        async getCustomerById(id) { const customers = await this.getCustomers(); return customers.find(c => c.id === id) || null; },
+        async saveCustomer(customer) {
+            const customers = await this.getCustomers();
+            const idx = customers.findIndex(c => (customer.phone && c.phone === customer.phone) || c.name.toLowerCase() === customer.name.toLowerCase());
+            if (idx >= 0) {
+                customers[idx] = { ...customers[idx], ...customer, updatedAt: Date.now() };
+            } else {
+                customers.push({ ...customer, id: 'cust_' + Date.now(), createdAt: Date.now(), totalSpent: 0, visitCount: 0, loyaltyPoints: 0, creditLimit: 0, creditUsed: 0 });
+            }
+            await this.set('customers', customers);
+            return customers;
+        },
+        async updateCustomerSpending(customerName, amount) {
+            const customers = await this.getCustomers();
+            const idx = customers.findIndex(c => c.name.toLowerCase() === customerName.toLowerCase());
+            if (idx >= 0) {
+                customers[idx].totalSpent = (customers[idx].totalSpent || 0) + amount;
+                customers[idx].visitCount = (customers[idx].visitCount || 0) + 1;
+                customers[idx].loyaltyPoints = Math.floor((customers[idx].totalSpent || 0) / 10);
+                customers[idx].lastVisit = new Date().toISOString().split('T')[0];
+                await this.set('customers', customers);
+            }
+            return customers;
+        },
+        async getTopCustomers(limit = 10) {
+            const customers = await this.getCustomers();
+            return customers.sort((a, b) => (b.totalSpent || 0) - (a.totalSpent || 0)).slice(0, limit);
+        },
+        async searchCustomers(query) {
+            const customers = await this.getCustomers();
+            const q = query.toLowerCase();
+            return customers.filter(c => c.name.toLowerCase().includes(q) || (c.phone || '').includes(q) || (c.email || '').toLowerCase().includes(q));
+        },
+        
+        // ============ CREDIT SALES ============
+        async getCreditSales() { return await this.get('credit_sales') || []; },
+        async addCreditSale(creditSale) {
+            const creditSales = await this.getCreditSales();
+            creditSales.push({ ...creditSale, id: 'credit_' + Date.now(), date: new Date().toISOString().split('T')[0], status: 'pending', paid: 0, paymentHistory: [] });
+            await this.set('credit_sales', creditSales);
+            return creditSales;
+        },
+        async recordCreditPayment(creditId, amount, method = 'Cash') {
+            const creditSales = await this.getCreditSales();
+            const idx = creditSales.findIndex(c => c.id === creditId);
+            if (idx >= 0) {
+                creditSales[idx].paid = (creditSales[idx].paid || 0) + amount;
+                creditSales[idx].paymentHistory = creditSales[idx].paymentHistory || [];
+                creditSales[idx].paymentHistory.push({ amount, method, date: new Date().toISOString().split('T')[0], time: new Date().toLocaleTimeString() });
+                if (creditSales[idx].paid >= creditSales[idx].total) {
+                    creditSales[idx].status = 'paid';
+                    creditSales[idx].paidDate = new Date().toISOString().split('T')[0];
+                }
+                await this.set('credit_sales', creditSales);
+            }
+            return creditSales;
+        },
+        async getPendingCreditSales() {
+            const creditSales = await this.getCreditSales();
+            return creditSales.filter(c => c.status === 'pending');
+        },
+        async getCreditSalesByCustomer(customerName) {
+            const creditSales = await this.getCreditSales();
+            return creditSales.filter(c => c.customer === customerName);
+        },
+        
+        // ============ SUPPLIERS ============
+        async getSuppliers() { return await this.get('suppliers') || []; },
+        async saveSupplier(supplier) {
+            const suppliers = await this.getSuppliers();
+            const idx = suppliers.findIndex(s => s.name.toLowerCase() === supplier.name.toLowerCase());
+            if (idx >= 0) suppliers[idx] = { ...suppliers[idx], ...supplier, updatedAt: Date.now() };
+            else suppliers.push({ ...supplier, id: 'supp_' + Date.now(), createdAt: Date.now() });
+            await this.set('suppliers', suppliers);
+            return suppliers;
+        },
+        async deleteSupplier(supplierId) {
+            let suppliers = await this.getSuppliers();
+            suppliers = suppliers.filter(s => s.id !== supplierId);
+            await this.set('suppliers', suppliers);
+            return suppliers;
+        },
+        
+        // ============ CATEGORIES ============
+        async getCategories() { return await this.get('categories') || ['General','Beverages','Groceries','Dairy','Bakery','Meat','Produce','Household','Electronics']; },
+        async saveCategories(categories) { await this.set('categories', categories); return categories; },
+        async addCategory(category) {
+            const categories = await this.getCategories();
+            if (!categories.includes(category)) { categories.push(category); await this.set('categories', categories); }
+            return categories;
+        },
+        async removeCategory(category) {
+            let categories = await this.getCategories();
+            categories = categories.filter(c => c !== category);
+            await this.set('categories', categories);
+            return categories;
+        },
+        
         // ============ EXPENSES ============
-        async function handleExpenseForm(e) { e.preventDefault(); const d = $('expDesc').value.trim(),
-                a = parseFloat($('expAmount').value) || 0,
-                c = $('expCategory').value,
-                n = $('expNote').value.trim(); if (!d || a <= 0) { sn('Fill fields'); return; } try { await db.collection(
-                    'vendors').doc(currentUser.uid).collection('expenses').add({ desc: d, amount: a, category: c,
-                    note: n, date: gd(), time: gt(), timestamp: firebase.firestore.FieldValue.serverTimestamp() });
-                e.target.reset();
-                sn('Saved');
-                renderExpensesList(); } catch (er) { sn('Error'); } }
-
-        async function renderExpensesList() { const el = $('expensesList'); try { const s = await db.collection('vendors')
-                    .doc(currentUser.uid).collection('expenses').orderBy('timestamp', 'desc').limit(30).get(); const ex =
-                [];
-                s.forEach(d => ex.push(d.data())); if (!ex.length) { el.innerHTML =
-                    '<div class="empty-state"><p>None</p></div>'; return; }
-                const t = ex.reduce((s, e) => s + e.amount, 0);
-                el.innerHTML =
-                    `<div style="font-weight:700;padding:8px;text-align:center;background:#f9fafb;border-radius:8px;margin-bottom:8px;">Total: ${fc(t)}</div>` +
-                    ex.map(e =>
-                        `<div class="list-item"><div><strong>${e.desc}</strong><br><small>${e.date} • ${e.category}</small>${e.note?`<br><small>${e.note}</small>`:''}</div><div style="color:var(--danger);">-${fc(e.amount)}</div></div>`)
-                    .join(''); } catch (e) { el.innerHTML = '<div class="empty-state"><p>Error</p></div>'; } }
-
-        // ============ REPORTS ============
-        function switchReportTab(tab, el) { currentReportTab = tab;
-            document.querySelectorAll('#reportsPage .tab').forEach(t => t.classList.remove('active'));
-            el.classList.add('active');
-            ['summary', 'sales', 'products', 'profit', 'license'].forEach(t => { const s = $('reportTab-' + t); if (s) s
-                    .style.display = t === tab ? 'block' : 'none'; });
-            refreshReports(); }
-
-        async function refreshReports() { if (currentReportTab === 'summary') await renderSummary(); if (currentReportTab ===
-                'products') await renderProductReport(); if (currentReportTab === 'profit') await renderProfitLoss(); if (
-                currentReportTab === 'license') await showLicense(); }
-
-        async function renderSummary() {
-            const today = gd();
-            let ts = 0,
-                tc = 0,
-                tco = 0,
-                te = 0,
-                salesData = [];
-            try {
-                const ss = await db.collection('vendors').doc(currentUser.uid).collection('sales').where('date', '==',
-                    today).orderBy('timestamp', 'desc').get();
-                ss.forEach(d => { const s = d.data();
-                    salesData.push(s);
-                    ts += s.qty * s.price;
-                    tc++; const p = allProducts.find(x => x.name === s.product); if (p) tco += s.qty * (p.cost || 0); });
-                const es = await db.collection('vendors').doc(currentUser.uid).collection('expenses').where('date', '==',
-                    today).get();
-                es.forEach(d => te += d.data().amount);
-            } catch (e) { console.error('Summary error:', e); }
-            const profit = ts - tco - te;
-            $('todayProfit').textContent = fc(profit);
-            $('reportSummaryStats').innerHTML = `
-                <div class="stat-card"><div class="value">${fc(ts)}</div><div class="label">💰 Sales</div></div>
-                <div class="stat-card"><div class="value">${fc(tco)}</div><div class="label">📦 COGS</div></div>
-                <div class="stat-card"><div class="value">${fc(te)}</div><div class="label">💸 Expenses</div></div>
-                <div class="stat-card"><div class="value" style="color:${profit>=0?'var(--success)':'var(--danger)'};">${fc(profit)}</div><div class="label">📈 Profit</div></div>`;
-            renderTodayTransactions(salesData);
+        async getExpenses() { return await this.get('expenses') || []; },
+        async saveExpense(expense) {
+            const expenses = await this.getExpenses();
+            expenses.unshift({ ...expense, id: 'exp_' + Date.now(), createdAt: Date.now() });
+            await this.set('expenses', expenses);
+            return expenses;
+        },
+        async getExpensesByDate(date) {
+            const expenses = await this.getExpenses();
+            return expenses.filter(e => e.date === date);
+        },
+        async getExpensesByCategory(category) {
+            const expenses = await this.getExpenses();
+            return expenses.filter(e => e.category === category);
+        },
+        async getTotalExpenses(date) {
+            const expenses = date ? await this.getExpensesByDate(date) : await this.getExpenses();
+            return expenses.reduce((sum, e) => sum + (e.amount || 0), 0);
+        },
+        
+        // ============ SETTINGS ============
+        async getSettings() {
+            return await this.get('settings') || {
+                businessName: 'My Shop', pin: '1234', currency: '$', taxRate: 0,
+                receiptFooter: 'Thank you for your business!', darkMode: false,
+                lowStockAlert: 5, defaultPaymentMethod: 'Cash', shopAddress: '',
+                shopPhone: '', shopEmail: '', enableLoyalty: true, loyaltyRate: 10,
+                enableCreditSales: true, maxCreditLimit: 1000
+            };
+        },
+        async saveSettings(settings) { await this.set('settings', settings); return settings; },
+        
+        // ============ BACKUP & RESTORE ============
+        async createFullBackup() {
+            return {
+                version: '7.0.0',
+                exportDate: new Date().toISOString(),
+                data: {
+                    products: await this.getProducts(),
+                    salesQueue: await this.getSalesQueue(),
+                    receipts: await this.getReceipts(),
+                    customers: await this.getCustomers(),
+                    creditSales: await this.getCreditSales(),
+                    suppliers: await this.getSuppliers(),
+                    categories: await this.getCategories(),
+                    expenses: await this.getExpenses(),
+                    settings: await this.getSettings()
+                }
+            };
+        },
+        async restoreFromBackup(backupData) {
+            if (!backupData || !backupData.data) return false;
+            const d = backupData.data;
+            if (d.products) await this.set('products', d.products);
+            if (d.salesQueue) await this.set('sales_queue', d.salesQueue);
+            if (d.receipts) await this.set('receipts', d.receipts);
+            if (d.customers) await this.set('customers', d.customers);
+            if (d.creditSales) await this.set('credit_sales', d.creditSales);
+            if (d.suppliers) await this.set('suppliers', d.suppliers);
+            if (d.categories) await this.set('categories', d.categories);
+            if (d.expenses) await this.set('expenses', d.expenses);
+            if (d.settings) await this.set('settings', d.settings);
+            return true;
+        },
+        async getDatabaseSize() {
+            let totalSize = 0;
+            const keys = ['products','sales_queue','receipts','customers','credit_sales','suppliers','categories','expenses','settings'];
+            for (const key of keys) { const data = await this.get(key); if (data) totalSize += JSON.stringify(data).length; }
+            return { bytes: totalSize, kilobytes: (totalSize/1024).toFixed(1), megabytes: (totalSize/1024/1024).toFixed(2) };
+        },
+        async clearAllData() {
+            const keys = ['products','sales_queue','receipts','customers','credit_sales','suppliers','categories','expenses','settings'];
+            for (const key of keys) { await this.set(key, key==='categories'?['General']:key==='settings'?null:[]); }
+            return true;
+        },
+        
+        // ============ STOCK TRANSFERS ============
+        async getTransfers() { return await this.get('transfers') || []; },
+        async addTransfer(transfer) {
+            const transfers = await this.getTransfers();
+            transfers.push({ ...transfer, id: 'trf_' + Date.now(), createdAt: Date.now() });
+            await this.set('transfers', transfers);
+            return transfers;
+        },
+        async completeTransfer(transferId) {
+            const transfers = await this.getTransfers();
+            const idx = transfers.findIndex(t => t.id === transferId);
+            if (idx >= 0) {
+                transfers[idx].status = 'completed';
+                transfers[idx].completedAt = Date.now();
+                // Update stock
+                const product = await this.getProductById(transfers[idx].productId);
+                if (product) {
+                    if (transfers[idx].type === 'in') {
+                        await this.updateProductStock(product.id, (product.qty || 0) + (transfers[idx].qty || 0));
+                    } else if (transfers[idx].type === 'out') {
+                        await this.updateProductStock(product.id, Math.max(0, (product.qty || 0) - (transfers[idx].qty || 0)));
+                    }
+                }
+                await this.set('transfers', transfers);
+            }
+            return transfers;
         }
+    };
 
-        function renderTodayTransactions(salesData) {
-            const tt = $('todayTransactions');
-            const today = gd();
-            const sales = (salesData || []).filter(s => s.date === today);
-            if (!sales.length) { tt.innerHTML =
-                '<div class="empty-state"><div class="icon">📋</div><p>No transactions today</p></div>'; return; }
-            tt.innerHTML = sales.map(s => `
-                <div class="list-item">
-                    <div><strong>${s.product}</strong> ×${s.qty}<br><small>${s.time||''} • ${s.cashier||'Unknown'}</small></div>
-                    <div style="text-align:right;"><strong>${fc(s.qty*s.price)}</strong><br><small>${s.paymentMethod||'Cash'}</small></div>
+    // ============ APP STATE ============
+    const AppState = {
+        pinVerified: false, enteredPin: '', managerPin: '1234',
+        cart: [], products: [], settings: {},
+        currentPage: 'sales', currentStockTab: 'inventory', currentCustomerTab: 'list',
+        scannerStream: null
+    };
+
+    // ============ UTILITIES ============
+    const $ = (id) => document.getElementById(id);
+    const formatMoney = (amount) => (AppState.settings.currency || '$') + Number(amount || 0).toFixed(2);
+    const getToday = () => new Date().toISOString().split('T')[0];
+    const getNow = () => new Date().toLocaleTimeString([], { hour:'2-digit', minute:'2-digit', second:'2-digit' });
+    const getDateDaysAgo = (days) => { const d = new Date(); d.setDate(d.getDate() - days); return d.toISOString().split('T')[0]; };
+    
+    function showSnackbar(message, type = '') {
+        const snackbar = $('snackbar');
+        snackbar.textContent = message;
+        snackbar.className = 'snackbar ' + type + ' show';
+        clearTimeout(snackbar._timeout);
+        snackbar._timeout = setTimeout(() => snackbar.classList.remove('show'), 2800);
+    }
+    
+    function closeModal(modalId) { const modal = $(modalId); if (modal) modal.classList.remove('active'); }
+    function openModal(modalId) { const modal = $(modalId); if (modal) modal.classList.add('active'); }
+
+    // ============ PIN SYSTEM ============
+    function buildPinPad() {
+        const pad = $('pinPad');
+        if (!pad) { console.error('PIN pad not found!'); return; }
+        pad.innerHTML = '';
+        for (let i = 1; i <= 9; i++) {
+            const btn = document.createElement('button');
+            btn.className = 'pin-key'; btn.textContent = i;
+            btn.onclick = (function(d) { return function() { enterPinDigit(d); }; })(i);
+            pad.appendChild(btn);
+        }
+        const clearBtn = document.createElement('button');
+        clearBtn.className = 'pin-key clear-btn'; clearBtn.textContent = '⌫';
+        clearBtn.onclick = function() { clearPinEntry(); };
+        pad.appendChild(clearBtn);
+        const zeroBtn = document.createElement('button');
+        zeroBtn.className = 'pin-key'; zeroBtn.textContent = '0';
+        zeroBtn.onclick = function() { enterPinDigit(0); };
+        pad.appendChild(zeroBtn);
+        const enterBtn = document.createElement('button');
+        enterBtn.className = 'pin-key enter-btn'; enterBtn.textContent = '✓';
+        enterBtn.onclick = function() { verifyPinCode(); };
+        pad.appendChild(enterBtn);
+        console.log('✅ PIN pad built: ' + pad.children.length + ' keys');
+    }
+    
+    function enterPinDigit(digit) {
+        if (AppState.enteredPin.length >= 4) return;
+        AppState.enteredPin += String(digit);
+        updatePinDotsDisplay();
+        if (AppState.enteredPin.length === 4) setTimeout(verifyPinCode, 300);
+    }
+    
+    function clearPinEntry() {
+        AppState.enteredPin = '';
+        updatePinDotsDisplay();
+        $('pinError').style.display = 'none';
+    }
+    
+    function updatePinDotsDisplay() {
+        const dots = document.querySelectorAll('.pin-dot');
+        dots.forEach((dot, i) => { dot.classList.toggle('filled', i < AppState.enteredPin.length); });
+    }
+    
+    async function verifyPinCode() {
+        const settings = await Database.getSettings();
+        const correctPin = settings.pin || '1234';
+        if (AppState.enteredPin === correctPin) {
+            AppState.pinVerified = true;
+            AppState.managerPin = correctPin;
+            $('pinScreen').classList.add('hide');
+            showMainInterface();
+            await loadAllData();
+        } else {
+            $('pinError').style.display = 'block';
+            AppState.enteredPin = '';
+            updatePinDotsDisplay();
+            setTimeout(() => { $('pinError').style.display = 'none'; }, 2000);
+        }
+    }
+    
+    async function handleResetPin() {
+        AppState.managerPin = '1234';
+        const settings = await Database.getSettings();
+        settings.pin = '1234';
+        await Database.saveSettings(settings);
+        AppState.enteredPin = '';
+        updatePinDotsDisplay();
+        $('pinError').style.display = 'none';
+        showSnackbar('PIN reset to 1234', 'warning');
+    }
+
+    // ============ THEME ============
+    function toggleDarkMode() {
+        document.body.classList.toggle('dark-mode');
+        localStorage.setItem('zimvendors_dark_mode', document.body.classList.contains('dark-mode') ? '1' : '0');
+    }
+    function applySavedTheme() {
+        if (localStorage.getItem('zimvendors_dark_mode') === '1') document.body.classList.add('dark-mode');
+    }
+
+    // ============ UI ============
+    function showMainInterface() {
+        $('appBar').style.display = 'flex';
+        $('mainContent').style.display = 'block';
+        $('bottomNav').style.display = 'flex';
+        $('cartFab').style.display = 'flex';
+        updateAppBarTitle();
+    }
+    function updateAppBarTitle() { $('appBarTitle').textContent = AppState.settings.businessName || 'ZimVendors AP'; }
+    
+    function navigateTo(page) {
+        AppState.currentPage = page;
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        $(page + 'Page').classList.add('active');
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        const navBtn = document.querySelector(`.nav-item[data-page="${page}"]`);
+        if (navBtn) navBtn.classList.add('active');
+        refreshCurrentPage();
+    }
+    
+    async function refreshCurrentPage() {
+        switch(AppState.currentPage) {
+            case 'sales': await renderSalesDashboard(); renderProductGrid(); break;
+            case 'stock': await renderInventory(); break;
+            case 'customers': await renderCustomerList(); break;
+            case 'expenses': await renderExpenseList(); renderExpenseForm(); break;
+            case 'reports': await renderReports(); break;
+        }
+    }
+    
+    async function loadAllData() {
+        AppState.settings = await Database.getSettings();
+        AppState.products = await Database.getProducts();
+        AppState.managerPin = AppState.settings.pin || '1234';
+        updateAppBarTitle();
+        await refreshCurrentPage();
+    }
+
+    // ============ SALES FUNCTIONS ============
+    async function renderSalesDashboard() {
+        const today = getToday();
+        const todaySales = await Database.getSalesByDate(today);
+        const totalSales = todaySales.reduce((s, x) => s + ((x.qty||0)*(x.price||0)), 0);
+        const totalCOGS = todaySales.reduce((s, x) => s + ((x.qty||0)*(x.cost||0)), 0);
+        const grossProfit = totalSales - totalCOGS;
+        const salesCount = todaySales.length;
+        const lowStock = AppState.products.filter(p => (p.qty||0) <= (AppState.settings.lowStockAlert||5) && (p.qty||0) > 0).length;
+        const outOfStock = AppState.products.filter(p => (p.qty||0) <= 0).length;
+        $('salesStatsGrid').innerHTML = `
+            <div class="stat-card" onclick="navigateTo('reports')"><div class="val">${formatMoney(totalSales)}</div><div class="lbl">💰 Today's Sales</div></div>
+            <div class="stat-card"><div class="val">${salesCount}</div><div class="lbl">📊 Transactions</div></div>
+            <div class="stat-card" onclick="navigateTo('stock')"><div class="val">${lowStock}</div><div class="lbl">⚠️ Low Stock</div></div>
+            <div class="stat-card"><div class="val" style="color:${grossProfit>=0?'var(--s)':'var(--d)'}">${formatMoney(grossProfit)}</div><div class="lbl">📈 Gross Profit</div></div>`;
+    }
+    
+    function renderProductGrid() {
+        const searchTerm = ($('productSearch')?.value || '').toLowerCase();
+        const filtered = AppState.products.filter(p => (p.name||'').toLowerCase().includes(searchTerm) || (p.sku||'').toLowerCase().includes(searchTerm));
+        const grid = $('productGrid');
+        if (!filtered.length) { grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1;"><div class="empty-icon">🛒</div><div class="empty-text">No products found</div></div>'; return; }
+        const emojis = ['📦','🥤','🍞','🧴','🥫','🧃','🍪','🧹','📱','💡','🧀','🥛','🍚','🧂','☕','🍬'];
+        grid.innerHTML = filtered.map(product => {
+            const qty = product.qty || 0;
+            const statusClass = qty <= 0 ? 's-out' : qty <= (AppState.settings.lowStockAlert||5) ? 's-low' : 's-ok';
+            const isDisabled = qty <= 0 ? ' disabled' : '';
+            const emoji = emojis[Math.abs((product.name||'').length) % emojis.length];
+            const safeName = (product.name||'').replace(/'/g,"\\'");
+            return `<div class="product-card${isDisabled}" onclick="addToCart('${safeName}',${product.price||0},${product.cost||0})"><div class="stock-dot ${statusClass}"></div><div class="p-emoji">${emoji}</div><div class="p-name">${product.name||'Product'}</div><div class="p-price">${formatMoney(product.price||0)}</div><div class="p-stock">Stock: ${qty}</div></div>`;
+        }).join('');
+    }
+    
+    function addToCart(productName, price, cost = 0) {
+        const product = AppState.products.find(p => p.name === productName);
+        if (!product || (product.qty||0) <= 0) { showSnackbar('❌ Out of stock!','error'); return; }
+        const existing = AppState.cart.find(item => item.product === productName);
+        if (existing) {
+            if ((product.qty||0) < existing.qty + 1) { showSnackbar('⚠️ Only ' + product.qty + ' left','warning'); return; }
+            existing.qty++;
+        } else {
+            AppState.cart.push({ product: productName, qty: 1, price: price, cost: cost });
+        }
+        updateCartBadge();
+        showSnackbar('✅ ' + productName, 'success');
+    }
+    
+    function updateCartBadge() {
+        const badge = $('cartItemCount');
+        const count = AppState.cart.reduce((sum, item) => sum + item.qty, 0);
+        badge.textContent = count;
+        badge.style.display = count > 0 ? 'flex' : 'none';
+    }
+    
+    function openCartSheet() {
+        if (!AppState.cart.length) { showSnackbar('Cart empty','warning'); return; }
+        renderCartItems();
+        loadCustomerSuggestions();
+        $('cartSheetOverlay').classList.add('active');
+        $('cartBottomSheet').classList.add('active');
+    }
+    
+    function closeCartSheet() { $('cartSheetOverlay').classList.remove('active'); $('cartBottomSheet').classList.remove('active'); }
+    
+    function renderCartItems() {
+        let subtotal = 0;
+        $('cartItemsList').innerHTML = AppState.cart.map((item, index) => {
+            const itemTotal = item.qty * item.price;
+            subtotal += itemTotal;
+            return `<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #eee;"><div style="flex:1;"><strong>${item.product}</strong><div style="font-size:11px;color:var(--g);">${formatMoney(item.price)} × ${item.qty}</div></div><div style="text-align:right;"><strong>${formatMoney(itemTotal)}</strong><br><button onclick="removeCartItem(${index})" style="color:var(--d);background:none;border:none;font-size:16px;cursor:pointer;">✕</button></div></div>`;
+        }).join('');
+        $('cartSubtotal').textContent = formatMoney(subtotal);
+        updateCartTotal();
+    }
+    
+    function removeCartItem(index) { AppState.cart.splice(index, 1); updateCartBadge(); if (!AppState.cart.length) closeCartSheet(); else renderCartItems(); }
+    function clearCart() { AppState.cart = []; updateCartBadge(); closeCartSheet(); showSnackbar('🗑️ Cart cleared'); }
+    
+    function toggleDiscountInput() { $('discountValue').style.display = $('discountType').value === 'none' ? 'none' : 'block'; updateCartTotal(); }
+    
+    function updateCartTotal() {
+        let subtotal = AppState.cart.reduce((sum, item) => sum + (item.qty * item.price), 0);
+        const discountType = $('discountType').value;
+        const discountValue = parseFloat($('discountValue').value) || 0;
+        let discount = 0;
+        if (discountType === 'percent') discount = subtotal * (discountValue / 100);
+        else if (discountType === 'fixed') discount = discountValue;
+        const total = Math.max(0, subtotal - discount);
+        const taxRate = AppState.settings.taxRate || 0;
+        const taxAmount = total * (taxRate / 100);
+        const finalTotal = total + taxAmount;
+        $('cartFinalTotal').textContent = `Total: ${formatMoney(finalTotal)}`;
+    }
+    
+    async function loadCustomerSuggestions() {
+        const customers = await Database.getCustomers();
+        const datalist = $('customerSuggestions');
+        if (datalist) datalist.innerHTML = customers.map(c => `<option value="${c.name}">${c.phone||''}</option>`).join('');
+    }
+    
+    async function completeSale() {
+        if (!AppState.cart.length) { showSnackbar('Cart empty!','error'); return; }
+        const paymentMethod = $('paymentMethod')?.value || 'Cash';
+        const cashier = $('cashierSelect')?.value || 'Counter 1';
+        const customerName = $('cartCustomerName')?.value?.trim() || 'Walk-in';
+        const date = getToday();
+        const time = getNow();
+        let subtotal = AppState.cart.reduce((sum, item) => sum + (item.qty * item.price), 0);
+        const discountType = $('discountType').value;
+        const discountValue = parseFloat($('discountValue').value) || 0;
+        let discount = 0;
+        if (discountType === 'percent') discount = subtotal * (discountValue / 100);
+        else if (discountType === 'fixed') discount = discountValue;
+        const afterDiscount = Math.max(0, subtotal - discount);
+        const taxRate = AppState.settings.taxRate || 0;
+        const taxAmount = afterDiscount * (taxRate / 100);
+        const finalTotal = afterDiscount + taxAmount;
+        
+        for (const item of AppState.cart) {
+            const product = AppState.products.find(p => p.name === item.product);
+            if (!product || (product.qty||0) < item.qty) { showSnackbar('❌ Insufficient stock: ' + item.product,'error'); return; }
+        }
+        
+        const receiptItems = [];
+        for (const item of AppState.cart) {
+            const product = AppState.products.find(p => p.name === item.product);
+            if (product) {
+                product.qty -= item.qty;
+                await Database.saveProduct({ name: product.name, qty: product.qty, price: product.price, cost: product.cost });
+            }
+            await Database.addToSalesQueue({
+                product: item.product, qty: item.qty, price: item.price, cost: item.cost || product?.cost || 0,
+                cashier, paymentMethod, customer: customerName, date, time
+            });
+            receiptItems.push({ product: item.product, qty: item.qty, price: item.price, cost: item.cost || 0, subtotal: item.qty * item.price });
+        }
+        
+        if (paymentMethod === '📝 Credit' && customerName !== 'Walk-in') {
+            await Database.addCreditSale({ customer: customerName, items: receiptItems, total: finalTotal, paid: 0 });
+        }
+        if (customerName !== 'Walk-in') {
+            await Database.updateCustomerSpending(customerName, finalTotal);
+        }
+        
+        const receipt = {
+            items: receiptItems, subtotal, discount, tax: taxAmount, total: finalTotal,
+            payment: paymentMethod, cashier, customer: customerName, date, time,
+            businessName: AppState.settings.businessName || 'ZimVendors AP',
+            footer: AppState.settings.receiptFooter || 'Thank you!'
+        };
+        await Database.saveReceipt(receipt);
+        displayReceipt(receipt);
+        AppState.cart = []; updateCartBadge(); closeCartSheet();
+        await renderSalesDashboard(); renderProductGrid();
+        showSnackbar('✅ Sale complete! ' + formatMoney(finalTotal), 'success');
+    }
+    
+    function displayReceipt(receipt) {
+        $('receiptContent').innerHTML = `
+            <div class="center"><strong>${receipt.businessName}</strong><br>${receipt.date} ${receipt.time}</div>
+            <div class="divider"></div>
+            ${receipt.items.map(item => `<div style="display:flex;justify-content:space-between;"><span>${item.product} ×${item.qty}</span><span>${formatMoney(item.subtotal)}</span></div>`).join('')}
+            ${receipt.discount > 0 ? `<div class="divider"></div><div style="display:flex;justify-content:space-between;"><span>Discount</span><span>-${formatMoney(receipt.discount)}</span></div>` : ''}
+            ${receipt.tax > 0 ? `<div style="display:flex;justify-content:space-between;"><span>Tax</span><span>${formatMoney(receipt.tax)}</span></div>` : ''}
+            <div class="divider"></div>
+            <div class="total-row" style="display:flex;justify-content:space-between;"><span>TOTAL</span><span>${formatMoney(receipt.total)}</span></div>
+            <div style="font-size:10px;margin-top:4px;">${receipt.payment} | ${receipt.cashier}${receipt.customer!=='Walk-in'?' | '+receipt.customer:''}</div>
+            <div class="divider"></div><div class="footer">${receipt.footer}</div>`;
+        openModal('receiptModal');
+    }
+    
+    function printReceipt() { window.print(); }
+    
+    async function shareReceipt() {
+        const text = $('receiptContent').innerText;
+        if (navigator.share) { try { await navigator.share({ title: 'Receipt', text }); } catch(e) {} }
+        else { try { await navigator.clipboard.writeText(text); showSnackbar('📋 Copied'); } catch(e) {} }
+    }
+
+    // ============ STOCK MANAGEMENT ============
+    function switchStockTab(tab, element) {
+        AppState.currentStockTab = tab;
+        document.querySelectorAll('#stockPage .tab').forEach(t => t.classList.remove('active'));
+        element.classList.add('active');
+        ['inventory','add','count','import','suppliers','categories','transfers'].forEach(t => {
+            const s = $('stockTab-' + t); if (s) s.style.display = t === tab ? 'block' : 'none';
+        });
+        switch(tab) {
+            case 'inventory': renderInventory(); break;
+            case 'add': renderAddProductForm(); break;
+            case 'count': renderStockCount(); break;
+            case 'import': renderImportForm(); break;
+            case 'suppliers': renderSuppliers(); break;
+            case 'categories': renderCategories(); break;
+            case 'transfers': renderTransfers(); break;
+        }
+    }
+    
+    async function renderInventory() {
+        const container = $('inventoryList');
+        if (!AppState.products.length) {
+            container.innerHTML = '<div class="empty-state"><div class="empty-icon">📦</div><div class="empty-text">No products</div></div>';
+            return;
+        }
+        const totalValue = await Database.getTotalInventoryValue();
+        const totalCost = await Database.getTotalInventoryCost();
+        container.innerHTML = `
+            <div style="display:flex;justify-content:space-between;padding:10px;background:var(--pl);border-radius:8px;margin-bottom:10px;font-weight:600;font-size:13px;">
+                <span>Value: ${formatMoney(totalValue)}</span><span>Cost: ${formatMoney(totalCost)}</span><span>Items: ${AppState.products.length}</span>
+            </div>
+            ${AppState.products.map(p => {
+                const q = p.qty||0, st = q<=0?'🔴':q<=5?'🟠':'🟢';
+                const nm = (p.name||'').replace(/'/g,"\\'");
+                return `<div class="list-item" style="cursor:pointer;" onclick="openEditProductModal('${p.id}','${nm}')"><div class="li-left"><div class="li-title">${st} ${p.name}</div><div class="li-sub">SKU:${p.sku||'-'} | Stock:${q} | ${p.category||'General'}${p.supplier?' | '+p.supplier:''}</div></div><div class="li-right"><strong>${formatMoney(p.price||0)}</strong><div class="li-sub">Cost:${formatMoney(p.cost||0)}</div></div></div>`;
+            }).join('')}`;
+    }
+    
+    function renderAddProductForm() {
+        $('addProductForm').innerHTML = `
+            <form onsubmit="handleAddProduct(event)">
+                <div class="form-group"><label>Product Name *</label><input type="text" class="input" id="newProductName" required></div>
+                <div class="form-group"><label>SKU/Barcode</label><input type="text" class="input" id="newProductSKU"></div>
+                <div class="input-row">
+                    <div class="form-group"><label>Quantity *</label><input type="number" class="input" id="newProductQty" required min="0" inputmode="numeric"></div>
+                    <div class="form-group"><label>Min Level</label><input type="number" class="input" id="newProductMin" value="5" min="0" inputmode="numeric"></div>
                 </div>
-            `).join('');
+                <div class="input-row">
+                    <div class="form-group"><label>Cost Price ($)</label><input type="number" class="input" id="newProductCost" step="0.01" inputmode="decimal"></div>
+                    <div class="form-group"><label>Selling Price *</label><input type="number" class="input" id="newProductPrice" step="0.01" required inputmode="decimal"></div>
+                </div>
+                <div class="form-group"><label>Category</label><select class="input" id="newProductCategory"><option>General</option><option>Beverages</option><option>Groceries</option><option>Dairy</option><option>Bakery</option><option>Meat</option><option>Produce</option><option>Household</option><option>Electronics</option></select></div>
+                <div class="form-group"><label>Supplier</label><input type="text" class="input" id="newProductSupplier"></div>
+                <button type="submit" class="btn btn-p btn-block">💾 Save Product</button>
+            </form>`;
+    }
+    
+    async function handleAddProduct(event) {
+        event.preventDefault();
+        const data = {
+            name: $('newProductName').value.trim(), sku: $('newProductSKU').value.trim(),
+            qty: parseInt($('newProductQty').value)||0, minLevel: parseInt($('newProductMin').value)||5,
+            cost: parseFloat($('newProductCost').value)||0, price: parseFloat($('newProductPrice').value)||0,
+            category: $('newProductCategory').value, supplier: $('newProductSupplier').value.trim()
+        };
+        if (!data.name) { showSnackbar('Name required','warning'); return; }
+        AppState.products = await Database.saveProduct(data);
+        event.target.reset(); $('newProductMin').value='5';
+        await renderInventory(); renderProductGrid();
+        showSnackbar('✅ Saved','success');
+    }
+    
+    function openEditProductModal(pid, name) {
+        const p = AppState.products.find(x => x.id===pid || x.name===name);
+        if (!p) return;
+        $('editProductFormContent').innerHTML = `
+            <form onsubmit="handleEditProduct(event,'${p.id}')">
+                <div class="form-group"><label>Name</label><input type="text" class="input" id="editName" value="${p.name||''}" required></div>
+                <div class="form-group"><label>SKU</label><input type="text" class="input" id="editSKU" value="${p.sku||''}"></div>
+                <div class="input-row"><div class="form-group"><label>Qty</label><input type="number" class="input" id="editQty" value="${p.qty||0}" inputmode="numeric"></div><div class="form-group"><label>Min</label><input type="number" class="input" id="editMin" value="${p.minLevel||5}" inputmode="numeric"></div></div>
+                <div class="input-row"><div class="form-group"><label>Cost</label><input type="number" class="input" id="editCost" value="${p.cost||0}" step="0.01" inputmode="decimal"></div><div class="form-group"><label>Price</label><input type="number" class="input" id="editPrice" value="${p.price||0}" step="0.01" inputmode="decimal"></div></div>
+                <div style="display:flex;gap:8px;"><button class="btn btn-p" style="flex:1;">💾 Save</button><button type="button" class="btn btn-d" onclick="deleteProduct('${p.id}')" style="flex:1;">🗑️ Delete</button></div>
+            </form>`;
+        openModal('editProductModal');
+    }
+    
+    async function handleEditProduct(e, pid) {
+        e.preventDefault();
+        const d = { name:$('editName').value.trim(), sku:$('editSKU').value.trim(), qty:parseInt($('editQty').value)||0, minLevel:parseInt($('editMin').value)||5, cost:parseFloat($('editCost').value)||0, price:parseFloat($('editPrice').value)||0 };
+        if (!d.name) { showSnackbar('Name required','warning'); return; }
+        AppState.products = await Database.saveProduct({...d, id:pid});
+        closeModal('editProductModal'); await renderInventory(); renderProductGrid();
+        showSnackbar('✅ Updated','success');
+    }
+    
+    async function deleteProduct(pid) {
+        if (!confirm('Delete permanently?')) return;
+        AppState.products = await Database.deleteProduct(pid);
+        closeModal('editProductModal'); await renderInventory(); renderProductGrid();
+        showSnackbar('🗑️ Deleted','warning');
+    }
+    
+    function renderStockCount() {
+        const el = $('stockCountList');
+        if (!AppState.products.length) { el.innerHTML = '<div class="empty-state">No products</div>'; return; }
+        el.innerHTML = AppState.products.map(p => `<div style="display:flex;justify-content:space-between;padding:8px 0;"><div>${p.name} (${p.qty||0})</div><div><input type="number" id="cnt_${p.id}" value="${p.qty||0}" style="width:60px;padding:4px;"><button class="btn btn-xs btn-p" onclick="updateCount('${p.id}')">✓</button></div></div>`).join('');
+    }
+    
+    async function updateCount(pid) {
+        const q = parseInt($('cnt_'+pid).value);
+        if (isNaN(q)||q<0) return;
+        await Database.updateProductStock(pid, q);
+        AppState.products = await Database.getProducts();
+        showSnackbar('✅ Updated'); renderInventory();
+    }
+    
+    function renderImportForm() {
+        $('importProductsForm').innerHTML = `<p style="font-size:12px;color:var(--g);margin-bottom:8px;">JSON: [{"name":"X","qty":10,"price":5}] | CSV: name,qty,price</p><input type="file" class="input" id="importFile" accept=".json,.csv" onchange="handleFileImport(event)"><div id="importPreview" style="margin-top:12px;"></div>`;
+    }
+    
+    async function handleFileImport(event) {
+        const file = event.target.files[0]; if (!file) return;
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+            try {
+                let data = [];
+                if (file.name.endsWith('.csv')) {
+                    const lines = e.target.result.split('\n').filter(l=>l.trim());
+                    const headers = lines[0].split(',').map(h=>h.trim().toLowerCase());
+                    data = lines.slice(1).map(l => { const v=l.split(','); const o={}; headers.forEach((h,i)=>o[h]=v[i]?.trim()); return {name:o.name||'?',qty:parseInt(o.qty)||0,price:parseFloat(o.price)||0}; });
+                } else { data = JSON.parse(e.target.result); }
+                if (!data.length) { showSnackbar('No data','error'); return; }
+                $('importPreview').innerHTML = `<div style="background:var(--pl);padding:10px;border-radius:8px;">${data.length} products</div><button class="btn btn-p btn-block" onclick="confirmImport(${JSON.stringify(data).replace(/"/g,'&quot;')})">✅ Import</button>`;
+            } catch(err) { showSnackbar('❌ Error','error'); }
+        };
+        reader.readAsText(file);
+    }
+    
+    async function confirmImport(data) {
+        if (!confirm(`Import ${data.length} products?`)) return;
+        AppState.products = await Database.bulkImportProducts(data);
+        await renderInventory(); renderProductGrid();
+        showSnackbar('✅ Imported','success');
+        $('importPreview').innerHTML = ''; $('importFile').value = '';
+    }
+    
+    async function renderSuppliers() {
+        const suppliers = await Database.getSuppliers();
+        $('suppliersContent').innerHTML = `
+            <form onsubmit="handleAddSupplier(event)">
+                <div class="input-row"><div class="form-group"><label>Name *</label><input type="text" class="input" id="supName" required></div><div class="form-group"><label>Contact</label><input type="text" class="input" id="supContact"></div></div>
+                <div class="input-row"><div class="form-group"><label>Phone</label><input type="text" class="input" id="supPhone"></div><div class="form-group"><label>Email</label><input type="email" class="input" id="supEmail"></div></div>
+                <button class="btn btn-p btn-block">💾 Save</button>
+            </form><hr>
+            <h4>Suppliers (${suppliers.length})</h4>
+            ${suppliers.map(s => `<div class="list-item"><div><strong>${s.name}</strong><br><small>${s.phone||''} ${s.email||''}</small></div><button class="btn btn-xs btn-d" onclick="deleteSupplier('${s.id}')">🗑️</button></div>`).join('')}`;
+    }
+    
+    async function handleAddSupplier(e) {
+        e.preventDefault();
+        const d = { name:$('supName').value.trim(), contact:$('supContact').value.trim(), phone:$('supPhone').value.trim(), email:$('supEmail').value.trim() };
+        if (!d.name) { showSnackbar('Name required','warning'); return; }
+        await Database.saveSupplier(d);
+        e.target.reset(); await renderSuppliers();
+        showSnackbar('✅ Saved','success');
+    }
+    
+    async function deleteSupplier(id) {
+        if (!confirm('Delete?')) return;
+        await Database.deleteSupplier(id);
+        await renderSuppliers();
+        showSnackbar('🗑️ Deleted','warning');
+    }
+    
+    async function renderCategories() {
+        const cats = await Database.getCategories();
+        $('categoriesContent').innerHTML = `
+            <div style="display:flex;gap:6px;margin-bottom:12px;"><input type="text" class="input" id="newCat" placeholder="New category"><button class="btn btn-p" onclick="addCategory()">➕</button></div>
+            <div style="display:flex;flex-wrap:wrap;gap:6px;">${cats.map((c,i) => `<span style="background:var(--sf);padding:6px 12px;border-radius:20px;border:1px solid #e0e0e0;font-size:12px;">${c} <button class="btn btn-xs btn-d" onclick="removeCategory('${c}')" style="padding:2px 6px;">✕</button></span>`).join('')}</div>`;
+    }
+    
+    async function addCategory() {
+        const name = $('newCat')?.value?.trim(); if (!name) return;
+        await Database.addCategory(name);
+        await renderCategories(); $('newCat').value = '';
+        showSnackbar('✅ Added','success');
+    }
+    
+    async function removeCategory(name) {
+        const cats = await Database.getCategories();
+        if (cats.length <= 1) { showSnackbar('Need at least 1','warning'); return; }
+        await Database.removeCategory(name);
+        await renderCategories();
+        showSnackbar('🗑️ Removed','warning');
+    }
+    
+    function renderTransfers() {
+        $('transfersContent').innerHTML = `
+            <form onsubmit="handleAddTransfer(event)">
+                <div class="form-group"><label>Product</label><select class="input" id="trfProduct">${AppState.products.map(p => `<option value="${p.id}">${p.name} (${p.qty||0})</option>`).join('')}</select></div>
+                <div class="input-row"><div class="form-group"><label>Quantity</label><input type="number" class="input" id="trfQty" required min="1" inputmode="numeric"></div><div class="form-group"><label>Type</label><select class="input" id="trfType"><option value="in">➕ Stock In</option><option value="out">➖ Stock Out</option></select></div></div>
+                <div class="form-group"><label>Note</label><input type="text" class="input" id="trfNote"></div>
+                <button class="btn btn-p btn-block">💾 Record Transfer</button>
+            </form>`;
+    }
+    
+    async function handleAddTransfer(e) {
+        e.preventDefault();
+        const d = { productId: $('trfProduct').value, qty: parseInt($('trfQty').value)||0, type: $('trfType').value, note: $('trfNote').value.trim(), date: getToday(), status: 'pending' };
+        if (!d.productId || d.qty <= 0) { showSnackbar('Fill fields','warning'); return; }
+        await Database.addTransfer(d);
+        await Database.completeTransfer((await Database.getTransfers()).slice(-1)[0].id);
+        AppState.products = await Database.getProducts();
+        e.target.reset(); await renderInventory(); renderProductGrid();
+        showSnackbar('✅ Transfer recorded','success');
+    }
+
+    // ============ CUSTOMERS ============
+    function switchCustomerTab(tab, el) {
+        AppState.currentCustomerTab = tab;
+        document.querySelectorAll('#customersPage .tab').forEach(t => t.classList.remove('active'));
+        el.classList.add('active');
+        ['list','add','credit','loyalty'].forEach(t => { const s = $('custTab-'+t); if(s) s.style.display = t===tab?'block':'none'; });
+        switch(tab) { case 'list': renderCustomerList(); break; case 'add': renderAddCustomerForm(); break; case 'credit': renderCreditSales(); break; case 'loyalty': renderLoyaltyProgram(); break; }
+    }
+    
+    async function renderCustomerList() {
+        const customers = await Database.getCustomers();
+        $('customersList').innerHTML = customers.length ? customers.map(c => `<div class="list-item"><div><strong>${c.name}</strong><br><small>${c.phone||''} | Spent:${formatMoney(c.totalSpent||0)} | ⭐${c.loyaltyPoints||0}</small></div><div><small>${c.lastVisit||'-'}</small></div></div>`).join('') : '<div class="empty-state">👥 No customers</div>';
+    }
+    
+    function renderAddCustomerForm() {
+        $('addCustomerForm').innerHTML = `<form onsubmit="handleAddCustomer(event)"><div class="form-group"><label>Name *</label><input type="text" class="input" id="newCustName" required></div><div class="input-row"><div class="form-group"><label>Phone</label><input type="text" class="input" id="newCustPhone"></div><div class="form-group"><label>Email</label><input type="email" class="input" id="newCustEmail"></div></div><button class="btn btn-p btn-block">💾 Save</button></form>`;
+    }
+    
+    async function handleAddCustomer(e) {
+        e.preventDefault();
+        const d = { name:$('newCustName').value.trim(), phone:$('newCustPhone').value.trim(), email:$('newCustEmail').value.trim() };
+        if (!d.name) { showSnackbar('Name required','warning'); return; }
+        await Database.saveCustomer(d);
+        e.target.reset(); await renderCustomerList();
+        showSnackbar('✅ Saved','success');
+    }
+    
+    async function renderCreditSales() {
+        const credits = await Database.getCreditSales();
+        $('creditSalesList').innerHTML = credits.length ? credits.map(c => `<div class="list-item"><div><strong>${c.customer}</strong><br><small>Total:${formatMoney(c.total)} | Paid:${formatMoney(c.paid||0)}</small><br><span class="badge ${c.status==='paid'?'badge-success':'badge-warning'}">${c.status}</span></div><div>${c.status==='pending'?`<button class="btn btn-xs btn-p" onclick="recordCreditPayment('${c.id}')">💵 Pay</button>`:'✅'}</div></div>`).join('') : '<div class="empty-state">No credit sales</div>';
+    }
+    
+    async function recordCreditPayment(id) {
+        const amt = parseFloat(prompt('Amount:')); if (!amt||amt<=0) return;
+        await Database.recordCreditPayment(id, amt);
+        await renderCreditSales();
+        showSnackbar('✅ Recorded','success');
+    }
+    
+    function renderLoyaltyProgram() {
+        $('loyaltyContent').innerHTML = `<div class="highlight-box"><p>⭐ Earn 1 point per $${AppState.settings.loyaltyRate||10} spent</p></div><div class="card"><h4>Top Members</h4><div id="loyaltyList"></div></div>`;
+        Database.getCustomers().then(cs => {
+            const top = cs.filter(c=>c.loyaltyPoints>0).sort((a,b)=>(b.loyaltyPoints||0)-(a.loyaltyPoints||0)).slice(0,20);
+            $('loyaltyList').innerHTML = top.length ? top.map(c => `<div class="list-item"><div><strong>${c.name}</strong></div><div>⭐ ${c.loyaltyPoints} pts</div></div>`).join('') : '<p>No members yet</p>';
+        });
+    }
+
+    // ============ EXPENSES ============
+    function renderExpenseForm() {
+        $('addExpenseForm').innerHTML = `<form onsubmit="handleAddExpense(event)"><div class="form-group"><label>Description *</label><input type="text" class="input" id="expDesc" required></div><div class="input-row"><div class="form-group"><label>Amount *</label><input type="number" class="input" id="expAmount" step="0.01" required inputmode="decimal"></div><div class="form-group"><label>Category</label><select class="input" id="expCategory"><option>Rent</option><option>Utilities</option><option>Stock</option><option>Salaries</option><option>Transport</option><option>Other</option></select></div></div><button class="btn btn-p btn-block">💾 Save</button></form>`;
+    }
+    
+    async function handleAddExpense(e) {
+        e.preventDefault();
+        const d = { desc:$('expDesc').value.trim(), amount:parseFloat($('expAmount').value)||0, category:$('expCategory').value, date:getToday(), time:getNow() };
+        if (!d.desc||d.amount<=0) { showSnackbar('Fill fields','warning'); return; }
+        await Database.saveExpense(d);
+        e.target.reset(); await renderExpenseList();
+        showSnackbar('✅ Saved','success');
+    }
+    
+    async function renderExpenseList() {
+        const expenses = await Database.getExpenses();
+        $('expensesList').innerHTML = expenses.length ? expenses.slice(0,30).map(e => `<div class="list-item"><div><strong>${e.desc}</strong><br><small>${e.date} | ${e.category}</small></div><div style="color:var(--d);">-${formatMoney(e.amount)}</div></div>`).join('') : '<div class="empty-state">No expenses</div>';
+    }
+    
+    function exportExpensesCSV() {
+        Database.getExpenses().then(expenses => {
+            let csv = 'Date,Description,Category,Amount\n';
+            expenses.forEach(e => csv += `"${e.date}","${e.desc}","${e.category}","${e.amount}"\n`);
+            const blob = new Blob([csv],{type:'text/csv'});
+            const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+            a.download = `expenses_${getToday()}.csv`; a.click();
+            showSnackbar('✅ Exported');
+        });
+    }
+
+    // ============ REPORTS (FIXED: Profit = Selling Price - Cost Price) ============
+    async function renderReports() {
+        const today = getToday();
+        const todaySales = await Database.getSalesByDate(today);
+        const totalSales = todaySales.reduce((s,x) => s + ((x.qty||0)*(x.price||0)), 0);
+        const totalCOGS = todaySales.reduce((s,x) => s + ((x.qty||0)*(x.cost||0)), 0);
+        const grossProfit = totalSales - totalCOGS;
+        const todayExpenses = await Database.getTotalExpenses(today);
+        const netProfit = grossProfit - todayExpenses;
+        const profitMargin = totalSales > 0 ? ((netProfit/totalSales)*100) : 0;
+        
+        $('todayNetProfit').textContent = formatMoney(netProfit);
+        $('todayNetProfit').style.color = netProfit >= 0 ? 'var(--s)' : 'var(--d)';
+        
+        $('reportsStatsGrid').innerHTML = `
+            <div class="stat-card"><div class="val">${formatMoney(totalSales)}</div><div class="lbl">💰 Sales</div></div>
+            <div class="stat-card"><div class="val" style="color:var(--d);">-${formatMoney(totalCOGS)}</div><div class="lbl">📦 COGS</div></div>
+            <div class="stat-card"><div class="val">${formatMoney(grossProfit)}</div><div class="lbl">📈 Gross Profit</div></div>
+            <div class="stat-card"><div class="val" style="color:var(--d);">-${formatMoney(todayExpenses)}</div><div class="lbl">💸 Expenses</div></div>
+            <div class="stat-card" style="grid-column:1/-1;background:var(--pl);"><div class="val" style="color:${netProfit>=0?'var(--s)':'var(--d)'};font-size:24px;">${formatMoney(netProfit)}</div><div class="lbl">📊 NET PROFIT (${profitMargin.toFixed(1)}% margin)</div></div>`;
+        
+        $('todayTransactions').innerHTML = todaySales.length ? todaySales.map(s => {
+            const saleTotal = (s.qty||0)*(s.price||0);
+            const saleProfit = saleTotal - ((s.qty||0)*(s.cost||0));
+            return `<div class="list-item"><div><strong>${s.product}</strong> ×${s.qty}<br><small>${s.time||''} | ${s.customer||'Walk-in'}</small></div><div style="text-align:right;"><strong>${formatMoney(saleTotal)}</strong><br><small style="color:${saleProfit>=0?'var(--s)':'var(--d)'};">Profit:${formatMoney(saleProfit)}</small></div></div>`;
+        }).join('') : '<div class="empty-state">No sales today</div>';
+        
+        const queue = await Database.getSalesQueue();
+        const perf = {};
+        queue.forEach(s => {
+            if(!perf[s.product]) perf[s.product] = {qty:0,revenue:0,cost:0,profit:0};
+            perf[s.product].qty += s.qty||0;
+            perf[s.product].revenue += (s.qty||0)*(s.price||0);
+            perf[s.product].cost += (s.qty||0)*(s.cost||0);
+            perf[s.product].profit += (s.qty||0)*((s.price||0)-(s.cost||0));
+        });
+        const topProd = Object.entries(perf).sort((a,b)=>b[1].profit-a[1].profit).slice(0,10);
+        $('topSellingProducts').innerHTML = topProd.length ? topProd.map(([n,d]) => `<div class="list-item"><div><strong>${n}</strong><br><small>Sold:${d.qty}</small></div><div style="text-align:right;"><strong style="color:${d.profit>=0?'var(--s)':'var(--d)'};">${formatMoney(d.profit)}</strong><br><small>Rev:${formatMoney(d.revenue)}</small></div></div>`).join('') : '<div class="empty-state">No data</div>';
+        
+        const custPerf = {};
+        queue.filter(s=>s.customer&&s.customer!=='Walk-in').forEach(s => {
+            if(!custPerf[s.customer]) custPerf[s.customer] = {spent:0,profit:0,visits:0};
+            custPerf[s.customer].spent += (s.qty||0)*(s.price||0);
+            custPerf[s.customer].profit += (s.qty||0)*((s.price||0)-(s.cost||0));
+            custPerf[s.customer].visits++;
+        });
+        const topCust = Object.entries(custPerf).sort((a,b)=>b[1].spent-a[1].spent).slice(0,10);
+        $('topCustomersList').innerHTML = topCust.length ? topCust.map(([n,d]) => `<div class="list-item"><div><strong>${n}</strong><br><small>${d.visits} visits</small></div><div style="text-align:right;"><strong>${formatMoney(d.spent)}</strong><br><small style="color:var(--s);">Profit:${formatMoney(d.profit)}</small></div></div>`).join('') : '<div class="empty-state">No data</div>';
+        
+        // Weekly summary
+        let weeklyHTML = '';
+        for (let i = 6; i >= 0; i--) {
+            const d = getDateDaysAgo(i);
+            const sales = await Database.getTotalSalesAmount(d);
+            const cogs = await Database.getTotalCOGS(d);
+            const prof = sales - cogs;
+            weeklyHTML += `<div class="list-item"><div><strong>${d}</strong></div><div style="text-align:right;"><strong>${formatMoney(sales)}</strong><br><small style="color:${prof>=0?'var(--s)':'var(--d)'};">Profit:${formatMoney(prof)}</small></div></div>`;
         }
+        $('weeklySummary').innerHTML = weeklyHTML;
+    }
 
-        async function generateSalesReport() { const f = $('salesReportFrom').value || gd(),
-                t = $('salesReportTo').value || gd(); try { const s = await db.collection('vendors').doc(currentUser.uid)
-                    .collection('sales').where('date', '>=', f).where('date', '<=', t).orderBy('date').get(); const d = [];
-                s.forEach(x => d.push(x.data())); const total = d.reduce((s, x) => s + x.qty * x.price, 0);
-                let html =
-                    `<div class="hl"><strong>${f} to ${t}</strong><br>Total: ${fc(total)} | Sales: ${d.length}</div>`;
-                const byDay = {};
-                d.forEach(s => { byDay[s.date] = byDay[s.date] || { total: 0, count: 0 };
-                    byDay[s.date].total += s.qty * s.price;
-                    byDay[s.date].count++; }); for (const [k, v] of Object.entries(byDay)) { html +=
-                        `<div class="list-item"><div><strong>${k}</strong><br><small>${v.count} sales</small></div><div>${fc(v.total)}</div></div>`; }
-                $('salesReportOutput').innerHTML = html; } catch (e) { $('salesReportOutput').innerHTML =
-                '<p>Error. Create Firestore indexes.</p>'; } }
+    // ============ SETTINGS ============
+    function openSettingsModal() {
+        $('settingsFormContent').innerHTML = `
+            <form onsubmit="handleSaveSettings(event)">
+                <div class="form-group"><label>Business Name</label><input type="text" class="input" id="setBizName" value="${AppState.settings.businessName||''}"></div>
+                <div class="input-row"><div class="form-group"><label>PIN (4 digits)</label><input type="number" class="input" id="setPin" value="${AppState.settings.pin||'1234'}" maxlength="4" inputmode="numeric"></div><div class="form-group"><label>Currency</label><input type="text" class="input" id="setCurrency" value="${AppState.settings.currency||'$'}"></div></div>
+                <div class="input-row"><div class="form-group"><label>Tax Rate (%)</label><input type="number" class="input" id="setTax" value="${AppState.settings.taxRate||0}" step="0.1" inputmode="decimal"></div><div class="form-group"><label>Low Stock Alert</label><input type="number" class="input" id="setLowStock" value="${AppState.settings.lowStockAlert||5}" inputmode="numeric"></div></div>
+                <div class="form-group"><label>Receipt Footer</label><input type="text" class="input" id="setFooter" value="${AppState.settings.receiptFooter||''}"></div>
+                <div class="form-group"><label>Loyalty Rate ($ per point)</label><input type="number" class="input" id="setLoyalty" value="${AppState.settings.loyaltyRate||10}" inputmode="numeric"></div>
+                <button class="btn btn-p btn-block">💾 Save Settings</button>
+            </form>
+            <hr style="margin:16px 0;">
+            <button class="btn btn-a btn-block" onclick="exportAllData()">📦 Export All Data</button>
+            <button class="btn btn-i btn-block" onclick="importAllData()">📥 Import Data</button>
+            <button class="btn btn-o btn-block" onclick="createBackup()">💾 Create Backup</button>
+            <button class="btn btn-w btn-block" onclick="showDatabaseInfo()">📊 Database Info</button>
+            <button class="btn btn-d btn-block" onclick="resetAllData()">🗑️ Reset All Data</button>`;
+        openModal('settingsModal');
+    }
+    
+    async function handleSaveSettings(e) {
+        e.preventDefault();
+        AppState.settings = {
+            businessName: $('setBizName').value.trim(), pin: $('setPin').value.trim()||'1234',
+            currency: $('setCurrency').value.trim()||'$', taxRate: parseFloat($('setTax').value)||0,
+            lowStockAlert: parseInt($('setLowStock').value)||5, receiptFooter: $('setFooter').value.trim(),
+            loyaltyRate: parseInt($('setLoyalty').value)||10
+        };
+        AppState.managerPin = AppState.settings.pin;
+        await Database.saveSettings(AppState.settings);
+        updateAppBarTitle(); closeModal('settingsModal');
+        showSnackbar('✅ Settings saved','success');
+    }
+    
+    async function exportAllData() {
+        const backup = await Database.createFullBackup();
+        const blob = new Blob([JSON.stringify(backup,null,2)],{type:'application/json'});
+        const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+        a.download = `zimvendors_full_backup_${getToday()}_${Date.now()}.json`; a.click();
+        showSnackbar('✅ Exported','success');
+    }
+    
+    function importAllData() {
+        const input = document.createElement('input'); input.type='file'; input.accept='.json';
+        input.onchange = async (e) => {
+            const file = e.target.files[0]; if(!file) return;
+            if(!confirm('⚠️ Replace all data?')) return;
+            const reader = new FileReader();
+            reader.onload = async (ev) => {
+                try {
+                    const data = JSON.parse(ev.target.result);
+                    const ok = await Database.restoreFromBackup(data);
+                    if(ok) { await loadAllData(); showSnackbar('✅ Restored','success'); }
+                } catch(err) { showSnackbar('❌ Invalid file','error'); }
+            };
+            reader.readAsText(file);
+        };
+        input.click();
+    }
+    
+    async function createBackup() { await exportAllData(); await Database.set('last_backup_date',getToday()); showSnackbar('✅ Backup created','success'); }
+    
+    async function showDatabaseInfo() {
+        const size = await Database.getDatabaseSize();
+        const products = await Database.getProducts();
+        const queue = await Database.getSalesQueue();
+        const customers = await Database.getCustomers();
+        alert(`📊 Database Info\n\nProducts: ${products.length}\nSales: ${queue.length}\nCustomers: ${customers.length}\nSize: ${size.megabytes} MB`);
+    }
+    
+    async function resetAllData() {
+        if(!confirm('⚠️ DELETE ALL DATA?')) return;
+        if(!confirm('FINAL WARNING!')) return;
+        await Database.clearAllData();
+        AppState.products = []; AppState.cart = [];
+        AppState.settings = await Database.getSettings();
+        AppState.managerPin = '1234';
+        updateAppBarTitle(); await loadAllData();
+        showSnackbar('🗑️ All data deleted','warning');
+    }
 
-        async function renderProductReport() { const el = $('productReport'); if (!allProducts.length) { el.innerHTML =
-                '<div class="empty-state"><p>No products</p></div>'; return; }
-            let html = ''; for (const p of allProducts) { try { const s = await db.collection('vendors').doc(currentUser.uid)
-                    .collection('sales').where('product', '==', p.name).get(); let sold = 0,
-                    rev = 0;
-                s.forEach(d => { const x = d.data();
-                    sold += x.qty;
-                    rev += x.qty * x.price; }); const prof = rev - sold * (p.cost || 0);
-                html +=
-                    `<div class="list-item"><div><strong>${p.name}</strong><br><small>Sold:${sold} | Stock:${p.qty||0}</small></div><div>${fc(rev)}<br><small style="color:${prof>=0?'var(--success)':'var(--danger)'};">Profit:${fc(prof)}</small></div></div>`; } catch (
-                    e) {} }
-            el.innerHTML = html || '<p>No data</p>'; }
-
-        async function renderProfitLoss() { const el = $('profitLossReport'); try { const today = gd(); let ts = 0,
-                    tc = 0,
-                    te = 0; const ss = await db.collection('vendors').doc(currentUser.uid).collection('sales').where(
-                        'date', '==', today).get();
-                ss.forEach(d => { const s = d.data();
-                    ts += s.qty * s.price; const p = allProducts.find(x => x.name === s.product); if (p) tc += s.qty * (p
-                        .cost || 0); }); const es = await db.collection('vendors').doc(currentUser.uid).collection(
-                        'expenses').where('date', '==', today).get();
-                es.forEach(d => te += d.data().amount); const gp = ts - tc,
-                    np = gp - te;
-                el.innerHTML = `<div class="hl"><div class="bn">${fc(np)}</div><small>NET PROFIT</small></div>
-                <div class="list-item"><span>💰 Sales</span><strong>${fc(ts)}</strong></div>
-                <div class="list-item"><span>📦 COGS</span><strong style="color:var(--danger);">-${fc(tc)}</strong></div>
-                <div class="list-item" style="font-weight:700;"><span>📈 Gross Profit</span><strong>${fc(gp)}</strong></div>
-                <div class="list-item"><span>💸 Expenses</span><strong style="color:var(--danger);">-${fc(te)}</strong></div>
-                <div class="list-item" style="font-weight:700;font-size:16px;background:#f9fafb;padding:10px;border-radius:8px;"><span>📊 Net Profit</span><strong style="color:${np>=0?'var(--success)':'var(--danger)'};">${fc(np)}</strong></div>`; } catch (
-                    e) { el.innerHTML = '<p>Error</p>'; } }
-
-        async function showLicense() { let h =
-                '<div class="card"><div class="card-header">📜 License</div><div style="font-size:14px;">'; if (isAdmin)
-                h += '<p>🛡️ <strong>Admin</strong> - Permanent</p>'; else if (currentVendor?.approved) { const ex =
-                    currentVendor.licenseExpiry?.toDate ? currentVendor.licenseExpiry.toDate() : currentVendor.licenseExpiry ?
-                    new Date(currentVendor.licenseExpiry) : null; const dl = ex ? Math.ceil((ex - new Date()) / (1000 * 60 *
-                        60 * 24)) : null;
-                h +=
-                    `<p>✅ <strong>Active</strong></p><p>Plan: ${LICENSE_PLANS[currentVendor.licensePlan]?.label||'Standard'}</p><p>Expires: ${ex?ex.toLocaleDateString():'N/A'}</p><p>Days: <strong>${dl||'N/A'}</strong></p>`; } else
-                h += '<p>⏳ Pending</p>';
-            h += '</div></div>';
-            $('licenseInfoSection').innerHTML = h; }
-
-        // ============ ADMIN ============
-        async function openAdminPanel() { if (!isAdmin) { sn('Admin only'); return; } try { const s = await db.collection(
-                    'vendors').get(); const v = [];
-                s.forEach(d => { if (d.id !== currentUser.uid) v.push({ id: d.id, ...d.data() }); }); let h =
-                    `<h4>Vendors (${v.length})</h4>`;
-                v.forEach(x => { const ex = x.licenseExpiry?.toDate ? x.licenseExpiry.toDate() : x.licenseExpiry ? new Date(
-                            x.licenseExpiry) : null; const dl = ex ? Math.ceil((ex - new Date()) / (1000 * 60 * 60 *
-                        24)) : null; const expired = dl !== null && dl <= 0; const active = x.approved && !expired;
-                    h += `<div style="padding:10px 0;border-bottom:1px solid #eee;"><strong>${x.name||'?'}</strong><br><small>${x.email} • ${active?'✅':expired?'🚫':'⏳'}</small>${ex?`<br><small>Expires:${ex.toLocaleDateString()}(${dl}d)</small>`:''}<br>${!x.approved||expired?`<select id="pl_${x.id}" style="padding:4px;border-radius:6px;margin:4px 0;">${Object.entries(LICENSE_PLANS).map(([k,p])=>`<option value="${k}">${p.label}</option>`).join('')}</select><br><button class="btn btn-sm btn-success" onclick="approve('${x.id}',document.getElementById('pl_${x.id}').value)">✅ Issue</button>`:`<button class="btn btn-sm btn-primary" onclick="renew('${x.id}')">🔄 Renew</button> <button class="btn btn-sm btn-danger" onclick="revoke('${x.id}')">🚫 Revoke</button>`}</div>`; });
-                $('adminContent').innerHTML = h || '<p>No vendors</p>';
-                $('adminModal').classList.add('active'); } catch (e) { sn('Error'); } }
-
-        async function approve(uid, plan) { const days = LICENSE_PLANS[plan]?.days || 30; const ex = new Date();
-            ex.setDate(ex.getDate() + days); try { await db.collection('vendors').doc(uid).update({ approved: true,
-                    licensePlan: plan, licenseExpiry: firebase.firestore.Timestamp.fromDate(ex) });
-                sn('Approved!');
-                openAdminPanel(); } catch (e) { sn('Error'); } }
-
-        async function renew(uid) { if (!confirm('Renew?')) return; const d = await db.collection('vendors').doc(uid).get(); const v =
-                d.data(); const ce = v.licenseExpiry?.toDate ? v.licenseExpiry.toDate() : new Date(); const ne = new Date(
-                Math.max(ce, new Date()));
-            ne.setDate(ne.getDate() + 30); try { await db.collection('vendors').doc(uid).update({ approved: true,
-                    licenseExpiry: firebase.firestore.Timestamp.fromDate(ne) });
-                sn('Renewed!');
-                openAdminPanel(); } catch (e) { sn('Error'); } }
-
-        async function revoke(uid) { if (!confirm('Revoke?')) return; try { await db.collection('vendors').doc(uid).update({
-                approved: false });
-            sn('Revoked');
-            openAdminPanel(); } catch (e) { sn('Error'); } }
-
-        // ============ PWA ============
-        let deferredPrompt;
-        window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault();
-            deferredPrompt = e;
-            $('installPrompt').classList.add('show'); });
-
-        function installApp() { if (deferredPrompt) { deferredPrompt.prompt();
-                deferredPrompt.userChoice.then(r => { console.log(r.outcome);
-                    deferredPrompt = null;
-                    $('installPrompt').classList.remove('show'); }); } }
-
-        function dismissInstall() { $('installPrompt').classList.remove('show'); }
-
-        if ('serviceWorker' in navigator) {
-            const swCode = `const C='zv1';self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(['/','/index.html'])));self.skipWaiting();});self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==C).map(x=>caches.delete(x)))));self.clients.claim();});self.addEventListener('fetch',e=>{if(e.request.url.includes('firestore')||e.request.url.includes('auth'))return;e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request)));});`;
-            const blob = new Blob([swCode], { type: 'application/javascript' });
-            navigator.serviceWorker.register(URL.createObjectURL(blob)).then(r => console.log('SW OK')).catch(e => console
-                .log('SW fail'));
+    // ============ BARCODE SCANNER ============
+    async function openBarcodeScanner() {
+        openModal('scannerModal');
+        try {
+            AppState.scannerStream = await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});
+            const video = document.createElement('video');
+            video.srcObject = AppState.scannerStream;
+            video.setAttribute('playsinline',true);
+            video.play();
+            const container = $('scannerView');
+            container.innerHTML = ''; container.appendChild(video);
+            video.style.width='100%'; video.style.height='100%'; video.style.objectFit='cover';
+        } catch(e) {
+            $('scannerView').innerHTML = '<p style="color:#fff;text-align:center;padding:40px;">Camera unavailable<br><small>Type barcode below</small></p>';
         }
+    }
+    
+    function stopBarcodeScanner() {
+        if (AppState.scannerStream) { AppState.scannerStream.getTracks().forEach(t=>t.stop()); AppState.scannerStream = null; }
+    }
+    
+    function searchByBarcode() {
+        const code = $('manualBarcodeInput')?.value?.trim(); if (!code) return;
+        const product = AppState.products.find(p => p.sku===code || (p.name||'').toLowerCase().includes(code.toLowerCase()));
+        if (product) {
+            addToCart(product.name, product.price, product.cost||0);
+            stopBarcodeScanner(); closeModal('scannerModal');
+            showSnackbar('✅ Found: '+product.name,'success');
+        } else { showSnackbar('❌ Not found','error'); }
+    }
 
-        // ============ INIT ============
-        $('salesReportFrom').value = gd();
-        $('salesReportTo').value = gd();
+    // ============ SERVICE WORKER ============
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js').catch(()=>{});
+    }
 
-        window.handleLogin = handleLogin;
-        window.showRegister = showRegister;
-        window.handleLogout = handleLogout;
-        window.navigateTo = navigateTo;
-        window.addToCart = addToCart;
-        window.openCart = openCart;
-        window.closeCart = closeCart;
-        window.clearCart = clearCart;
-        window.completeSale = completeSale;
-        window.removeItem = removeItem;
-        window.updateBadge = updateBadge;
-        window.handleStockForm = handleStockForm;
-        window.handleExpenseForm = handleExpenseForm;
-        window.switchStockTab = switchStockTab;
-        window.switchReportTab = switchReportTab;
-        window.updateTake = updateTake;
-        window.generateSalesReport = generateSalesReport;
-        window.openAdminPanel = openAdminPanel;
-        window.approve = approve;
-        window.renew = renew;
-        window.revoke = revoke;
-        window.closeModal = cm;
-        window.printReceipt = printReceipt;
-        window.renderProductGrid = renderProductGrid;
-        window.installApp = installApp;
-        window.dismissInstall = dismissInstall;
+    // ============ INITIALIZATION ============
+    async function initializeApp() {
+        console.log('🚀 ZimVendors AP v7.0 Starting...');
+        applySavedTheme();
+        buildPinPad();
+        try { AppState.settings = await Database.getSettings(); } catch(e) { AppState.settings = { businessName:'My Shop',pin:'1234',currency:'$',taxRate:0,receiptFooter:'Thank you!',lowStockAlert:5,loyaltyRate:10 }; }
+        AppState.managerPin = AppState.settings.pin || '1234';
+        updateAppBarTitle();
+        try { AppState.products = await Database.getProducts(); } catch(e) { AppState.products = []; }
+        try { const lb = await Database.get('last_backup_date'); if(lb !== getToday()) await createBackup(); } catch(e) {}
+        $('pinScreen').classList.remove('hide');
+        AppState.enteredPin = ''; updatePinDotsDisplay();
+        console.log('✅ v7.0 Ready • PIN:'+AppState.managerPin+' • Products:'+AppState.products.length);
+    }
 
-        console.log('🚀 ZimVendors AP • Production Ready');
-        console.log('✅ Logo integrated');
-        console.log('✅ Trolley icons on all products');
-        console.log('✅ Today transactions fixed');
-        console.log('✅ All reports working');
-        console.log('✅ PWA enabled');
-        console.log('✅ Offline support');
+    // Export all to window
+    window.navigateTo=navigateTo; window.addToCart=addToCart; window.openCartSheet=openCartSheet; window.closeCartSheet=closeCartSheet; window.clearCart=clearCart; window.completeSale=completeSale; window.removeCartItem=removeCartItem; window.updateCartBadge=updateCartBadge; window.toggleDiscountInput=toggleDiscountInput; window.updateCartTotal=updateCartTotal; window.renderProductGrid=renderProductGrid;
+    window.switchStockTab=switchStockTab; window.handleAddProduct=handleAddProduct; window.openEditProductModal=openEditProductModal; window.handleEditProduct=handleEditProduct; window.deleteProduct=deleteProduct; window.updateCount=updateCount; window.handleFileImport=handleFileImport; window.confirmImport=confirmImport; window.handleAddSupplier=handleAddSupplier; window.deleteSupplier=deleteSupplier; window.addCategory=addCategory; window.removeCategory=removeCategory; window.handleAddTransfer=handleAddTransfer;
+    window.switchCustomerTab=switchCustomerTab; window.handleAddCustomer=handleAddCustomer; window.recordCreditPayment=recordCreditPayment;
+    window.handleAddExpense=handleAddExpense; window.exportExpensesCSV=exportExpensesCSV;
+    window.openSettingsModal=openSettingsModal; window.handleSaveSettings=handleSaveSettings; window.exportAllData=exportAllData; window.importAllData=importAllData; window.createBackup=createBackup; window.showDatabaseInfo=showDatabaseInfo; window.resetAllData=resetAllData;
+    window.openBarcodeScanner=openBarcodeScanner; window.stopBarcodeScanner=stopBarcodeScanner; window.searchByBarcode=searchByBarcode;
+    window.toggleDarkMode=toggleDarkMode; window.handleResetPin=handleResetPin; window.closeModal=closeModal; window.printReceipt=printReceipt; window.shareReceipt=shareReceipt;
+
+    if (document.readyState === 'complete' || document.readyState === 'interactive') {
+        setTimeout(initializeApp, 100);
+    } else {
+        document.addEventListener('DOMContentLoaded', initializeApp);
+    }
     </script>
 </body>
-    </html>
+</html>
